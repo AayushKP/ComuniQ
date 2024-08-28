@@ -1,6 +1,6 @@
 import NewDM from "./components/new-dm";
 import ProfileInfoComponent from "./components/profile-info";
-import { LuMessagesSquare } from "react-icons/lu";
+
 
 function ContactsContainer() {
   return (

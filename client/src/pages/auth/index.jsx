@@ -4,15 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import apiClient from "@/lib/api-client";
-import { userInfoAtom } from "@/store/auth-atom";
+import { useAppStore } from "@/store/slices";
+
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+
 import { toast } from "sonner";
 
 function Auth() {
-  const setUserInfo = useSetRecoilState(userInfoAtom);
+  const { setUserInfo } = useAppStore();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

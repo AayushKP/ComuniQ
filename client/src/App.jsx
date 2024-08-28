@@ -1,28 +1,29 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { Button } from "./components/ui/button";
 import Auth from "./pages/auth";
 import Chat from "./pages/chat";
 import Profile from "./pages/profile";
-import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
-import { userInfoAtom, userSelector } from "./store/auth-atom";
 import { useEffect, useState } from "react";
 import apiClient from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constants";
+import { SocketProvider } from "./context/SocketContext";
+import { useAppStore } from "./store/slices";
 
 const PrivateRoute = ({ children }) => {
-  const userInfo = useRecoilValue(userSelector);
+  const userInfo = useAppStore();
+  console.log(userInfo);
   const isAuthenticated = !!userInfo;
   return isAuthenticated ? children : <Navigate to="/auth" />;
 };
 
 const AuthRoute = ({ children }) => {
-  const userInfo = useRecoilValue(userSelector);
+  const userInfo = useAppStore();
+  console.log(userInfo);
   const isAuthenticated = !!userInfo;
   return isAuthenticated ? <Navigate to="/chat" /> : children;
 };
 
-const AppRoutes = () => {
-  const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
+const App = () => {
+  const { userInfo, setUserInfo } = useAppStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,20 +32,22 @@ const AppRoutes = () => {
         const res = await apiClient.get(GET_USER_INFO, {
           withCredentials: true,
         });
+        console.log("API Response:", res); // Debugging line
         if (res.status === 200 && res.data.id) {
-          setUserInfo(res.data);
+          setUserInfo(res.data); // Setting user data
         } else {
-          setUserInfo(undefined);
+          setUserInfo(null); // Ensuring null if user data is not valid
         }
       } catch (error) {
-        setUserInfo(undefined);
+        console.error("Error fetching user data:", error); // Debugging line
+        setUserInfo(null); // Set null on error
       } finally {
         setLoading(false);
       }
     };
 
     if (!userInfo) {
-      getUserData();
+      getUserData(); // Fetch user data if not available
     } else {
       setLoading(false);
     }
@@ -86,11 +89,5 @@ const AppRoutes = () => {
     </BrowserRouter>
   );
 };
-
-const App = () => (
-  <RecoilRoot>
-    <AppRoutes />
-  </RecoilRoot>
-);
 
 export default App;

@@ -1,6 +1,5 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { userInfoAtom } from "@/store/auth-atom";
-import { useRecoilState } from "recoil";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+
 import { getColor } from "@/lib/utils";
 import { HOST, LOGOUT_ROUTE } from "@/utils/constants";
 import { FiEdit2 } from "react-icons/fi";
@@ -13,10 +12,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import { IoPowerSharp } from "react-icons/io5";
 import apiClient from "@/lib/api-client";
+import { useAppStore } from "@/store/slices";
 
 function ProfileInfoComponent() {
   const navigate = useNavigate();
-  const [userInfo, setuserInfo] = useRecoilState(userInfoAtom);
+  const { userInfo, setUserInfo } = useAppStore();
+
   const logout = async () => {
     try {
       const res = await apiClient.post(
@@ -29,7 +30,7 @@ function ProfileInfoComponent() {
       console.log(res);
       if (res.status === 200) {
         navigate("/auth");
-        setuserInfo(null);
+        setUserInfo(null);
       }
     } catch (error) {
       console.log(error);

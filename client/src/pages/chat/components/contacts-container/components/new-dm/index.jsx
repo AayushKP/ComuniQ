@@ -4,27 +4,29 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import Lottie from "react-lottie";
 import { animationsDefaultOptions, getColor } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { HOST, SEARCH_CONTACTS_ROUTES } from "@/utils/constants";
 import apiClient from "@/lib/api-client";
+import { useAppStore } from "@/store/slices";
 
 function NewDM() {
+  const { setSelectedChatType, setSelectedChatData } = useAppStore();
   const [openNewContactModel, setOpenNewContactModel] = useState(false);
   const [searchedContacts, setSearchedContacts] = useState([]);
+
   const searchContacts = async (searchTerm) => {
     try {
       const res = await apiClient.post(
@@ -44,6 +46,8 @@ function NewDM() {
 
   const selectNewContact = (contact) => {
     setOpenNewContactModel(false);
+    setSelectedChatType("contact");
+    setSelectedChatData(contact);
     setSearchedContacts([]);
   };
 
@@ -57,7 +61,7 @@ function NewDM() {
               onClick={() => setOpenNewContactModel(true)}
             />
           </TooltipTrigger>
-          <TooltipContent className="bg-[#1c1b1e border-none mb-2 p-3 text-white">
+          <TooltipContent className="bg-[#1c1b1e] border-none mb-2 p-3 text-white">
             Select new Contact
           </TooltipContent>
         </Tooltip>
@@ -75,13 +79,13 @@ function NewDM() {
               onChange={(e) => searchContacts(e.target.value)}
             />
           </div>
-          {searchedContacts.length > 0 && (
+          {searchedContacts.length > 0 ? (
             <ScrollArea className="h-[250px]">
               <div className="flex flex-col gap-5">
                 {searchedContacts.map((contact) => (
                   <div
                     key={contact._id}
-                    className="flex gap-3 items-center cursor-pointer "
+                    className="flex gap-3 items-center cursor-pointer"
                     onClick={() => selectNewContact(contact)}
                   >
                     <div className="w-12 h-12 relative">
@@ -99,8 +103,8 @@ function NewDM() {
                             )}`}
                           >
                             {contact.firstName
-                              ? contact.firstName.split("").shift()
-                              : contact.email.split("").shift()}
+                              ? contact.firstName.charAt(0)
+                              : contact.email.charAt(0)}
                           </div>
                         )}
                       </Avatar>
@@ -117,8 +121,7 @@ function NewDM() {
                 ))}
               </div>
             </ScrollArea>
-          )}
-          {searchedContacts.length <= 0 && (
+          ) : (
             <div className="flex-1 mt-5 md:mt-0 lg:mt-0 md:bg-[#181920] md:flex flex-col justify-center  duration-1000 transition-all">
               <Lottie
                 isClickToPauseDisabled={true}
@@ -139,4 +142,5 @@ function NewDM() {
     </div>
   );
 }
+
 export default NewDM;

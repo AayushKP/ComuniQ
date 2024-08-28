@@ -1,6 +1,4 @@
-import { userInfoAtom, userSelector } from "@/store/auth-atom";
 import { useEffect, useRef, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
 import { IoArrowBack } from "react-icons/io5";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { getColor } from "@/lib/utils";
@@ -17,11 +15,11 @@ import {
   UPDATE_PROFILE_ROUTE,
 } from "@/utils/constants";
 import { toast } from "sonner";
-
+import { useAppStore } from "@/store/slices";
 
 function index() {
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
+  const { userInfo, setUserInfo } = useAppStore();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [image, setImage] = useState(null);
@@ -71,7 +69,15 @@ function index() {
         if (res.status === 200 && res.data) {
           setUserInfo({ ...res.data });
           toast.success("Profile updated successfully.");
-          navigate("/chat");
+
+          // Only navigate to chat if the profile setup is complete
+          if (userInfo.profileSetup) {
+            navigate("/chat");
+          } else {
+            toast.error(
+              "Please complete your profile setup before proceeding to chat."
+            );
+          }
         }
       } catch (error) {
         console.error("Error updating profile:", error);
