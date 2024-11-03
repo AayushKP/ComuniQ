@@ -9,17 +9,15 @@ import { SocketProvider } from "./context/SocketContext";
 import { useAppStore } from "./store/slices";
 
 const PrivateRoute = ({ children }) => {
-  const userInfo = useAppStore();
-  console.log(userInfo);
-  const isAuthenticated = !!userInfo;
-  return isAuthenticated ? children : <Navigate to="/auth" />;
+  const { userInfo } = useAppStore();
+
+  return userInfo ? children : <Navigate to="/auth" />;
 };
 
 const AuthRoute = ({ children }) => {
-  const userInfo = useAppStore();
-  console.log(userInfo);
-  const isAuthenticated = !!userInfo;
-  return isAuthenticated ? <Navigate to="/chat" /> : children;
+  const { userInfo } = useAppStore();
+
+  return userInfo ? <Navigate to="/chat" /> : children;
 };
 
 const App = () => {

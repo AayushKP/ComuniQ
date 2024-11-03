@@ -9,15 +9,6 @@ import { useAppStore } from "@/store/slices";
 function ChatHeader() {
   const { closeChat, selectedChatData, selectedChatType } = useAppStore();
 
-  const getInitial = () => {
-    if (selectedChatData?.firstName) {
-      return selectedChatData.firstName.charAt(0);
-    } else if (selectedChatData?.email) {
-      return selectedChatData.email.charAt(0);
-    }
-    return "?";
-  };
-
   return (
     <div className="h-[10vh] border-b-2 border-[#2f303b] flex items-center justify-between px-20">
       <div className="flex gap-5 items-center w-full justify-between">
@@ -36,7 +27,9 @@ function ChatHeader() {
                     selectedChatData?.color
                   )}`}
                 >
-                  {getInitial()}
+                  {selectedChatData.firstName
+                    ? selectedChatData.firstName.split("").shift()
+                    : selectedChatData.email.split("").shift()}
                 </div>
               )}
             </Avatar>

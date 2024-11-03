@@ -12,20 +12,35 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Lottie from "react-lottie";
-import { animationsDefaultOptions, getColor } from "@/lib/utils";
+import { getColor } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { HOST, SEARCH_CONTACTS_ROUTES } from "@/utils/constants";
+import {
+  GET_CONTACTS_ROUTES,
+  HOST,
+  SEARCH_CONTACTS_ROUTES,
+} from "@/utils/constants";
 import apiClient from "@/lib/api-client";
 import { useAppStore } from "@/store/slices";
 
 function NewDM() {
   const { setSelectedChatType, setSelectedChatData } = useAppStore();
   const [openNewContactModel, setOpenNewContactModel] = useState(false);
+  const [allContacts, setAllContacts] = useState([]);
   const [searchedContacts, setSearchedContacts] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await apiClient.get(GET_CONTACTS_ROUTES, {
+        withCredentials: true,
+      });
+      console.log(response.data.contacts);
+      setAllContacts(response.data.contacts);
+    };
+    getData();
+  }, []);
 
   const searchContacts = async (searchTerm) => {
     try {
@@ -48,6 +63,7 @@ function NewDM() {
     setOpenNewContactModel(false);
     setSelectedChatType("contact");
     setSelectedChatData(contact);
+    console.log(contact);
     setSearchedContacts([]);
   };
 
@@ -122,20 +138,47 @@ function NewDM() {
               </div>
             </ScrollArea>
           ) : (
-            <div className="flex-1 mt-5 md:mt-0 lg:mt-0 md:bg-[#181920] md:flex flex-col justify-center  duration-1000 transition-all">
-              <Lottie
-                isClickToPauseDisabled={true}
-                height={100}
-                width={100}
-                options={animationsDefaultOptions}
-              />
-              <div className="text-opacity-80 text-white flex flex-col gap-5 mt-5 items-center lg:text-2xl text-xl transition-all duration-300 text-center ">
-                <h3>
-                  Hi <span className="text-[#912a2a]">! </span>Search new{" "}
-                  <span className="text-[#bdb220]">Contact.</span>
-                </h3>
+            <ScrollArea className="h-[250px]">
+              <div className="flex flex-col gap-5">
+                {allContacts.map((contact) => (
+                  <div
+                    key={contact._id}
+                    className="flex gap-3 items-center cursor-pointer"
+                    onClick={() => selectNewContact(contact)}
+                  >
+                    <div className="w-12 h-12 relative">
+                      <Avatar className="h-12 w-12 rounded-full overflow-hidden">
+                        {contact.image ? (
+                          <AvatarImage
+                            src={`${HOST}/${contact.image}`}
+                            alt="profile"
+                            className="object-cover w-full h-full bg-black"
+                          />
+                        ) : (
+                          <div
+                            className={`uppercase h-12 w-12 text-lg border-[1px] flex items-center justify-center rounded-full ${getColor(
+                              contact.color
+                            )}`}
+                          >
+                            {contact.firstName
+                              ? contact.firstName.charAt(0)
+                              : contact.email.charAt(0)}
+                          </div>
+                        )}
+                      </Avatar>
+                    </div>
+                    <div className="flex flex-col">
+                      <span>
+                        {contact.firstName && contact.lastName
+                          ? `${contact.firstName} ${contact.lastName}`
+                          : ""}
+                      </span>
+                      <span>{contact.email}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            </ScrollArea>
           )}
         </DialogContent>
       </Dialog>

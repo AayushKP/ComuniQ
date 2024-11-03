@@ -16,6 +16,7 @@ import { useAppStore } from "@/store/slices";
 
 function ProfileInfoComponent() {
   const navigate = useNavigate();
+  
   const { userInfo, setUserInfo } = useAppStore();
 
   const logout = async () => {
