@@ -109,7 +109,7 @@ export const getUserInfo = async (req, res, next) => {
 
 export const updateProfile = async (req, res, next) => {
   try {
-    const userId = req.userId; // Use userId from the request object
+    const userId = req.userId;
     const { firstName, lastName, color } = req.body;
 
     if (!firstName || !lastName || color === undefined) {
@@ -118,18 +118,17 @@ export const updateProfile = async (req, res, next) => {
         .send("FirstName, LastName, and Color are required");
     }
 
+    // Use an update object and conditionally add fields to prevent overwriting with undefined
+    const updateData = { profileSetup: true };
+
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+    if (color !== undefined) updateData.color = color;
+
     const userData = await User.findByIdAndUpdate(
-      userId, // Use userId correctly
-      {
-        firstName,
-        lastName,
-        profileSetup: true,
-        color,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
+      userId,
+      { $set: updateData },
+      { new: true, runValidators: true }
     );
 
     if (!userData) {
@@ -210,4 +209,4 @@ export const logout = async (req, res, next) => {
   }
 };
 
-export default { signup, login };
+export default { signup, login, logout };

@@ -14,6 +14,7 @@ function EmptyChatContainer() {
         <h3 className="font-serif">
           Welcome to <span className="text-[#cdc52a]">ComUniQ</span>
         </h3>
+        
       </div>
     </div>
   );

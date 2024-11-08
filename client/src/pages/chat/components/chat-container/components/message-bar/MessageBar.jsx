@@ -1,6 +1,5 @@
 import { useSocket } from "@/context/SocketContext";
 import apiClient from "@/lib/api-client";
-
 import { useAppStore } from "@/store/slices";
 import { UPLOAD_FILE_ROUTE } from "@/utils/constants";
 import EmojiPicker from "emoji-picker-react";
@@ -21,6 +20,7 @@ function MessageBar() {
     setIsUploading,
     setFileUploadProgress,
   } = useAppStore();
+
   const [message, setMessage] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
 
@@ -46,15 +46,25 @@ function MessageBar() {
       return;
     }
 
-    if (selectedChatType === "contact") {
-      socket.emit("sendMessage", {
+    if (message.trim()) {
+      const messageData = {
         sender: userInfo.id,
         content: message,
-        recipient: selectedChatData._id,
         messageType: "text",
         fileUrl: undefined,
-      });
-      setMessage(""); // Clear the input field after sending
+      };
+
+      if (selectedChatType === "contact") {
+        messageData.recipient = selectedChatData._id;
+        console.log("Sending text message:", messageData);
+        socket.emit("sendMessage", messageData);
+      } else if (selectedChatType === "channel") {
+        messageData.channelId = selectedChatData._id;
+        console.log("Sending text message to channel:", messageData);
+        socket.emit("send-channel-message", messageData);
+      }
+
+      setMessage("");
     }
   };
 
@@ -71,6 +81,7 @@ function MessageBar() {
         const formData = new FormData();
         formData.append("file", file);
         setIsUploading(true);
+
         const response = await apiClient.post(UPLOAD_FILE_ROUTE, formData, {
           withCredentials: true,
           onUploadProgress: (data) => {
@@ -78,25 +89,38 @@ function MessageBar() {
           },
         });
 
-        if (response.status === 200 && response.data) {
+        if (response.status === 200 && response.data && response.data.fileUrl) {
+          const fileUrl = response.data.fileUrl;
           setIsUploading(false);
+
+          const fileMessageData = {
+            sender: userInfo.id,
+            content: undefined,
+            messageType: "file",
+            fileUrl, // Ensure this is defined
+            ...(selectedChatType === "contact"
+              ? { recipient: selectedChatData._id }
+              : { channelId: selectedChatData._id }),
+          };
+
+          console.log("Sending file message:", fileMessageData);
+
           if (selectedChatType === "contact") {
-            socket.emit("sendMessage", {
-              sender: userInfo.id,
-              content: undefined,
-              recipient: selectedChatData._id,
-              messageType: "file",
-              fileUrl: response.data.filePath,
-            });
+            socket.emit("sendMessage", fileMessageData);
+          } else if (selectedChatType === "channel") {
+            socket.emit("send-channel-message", fileMessageData);
           }
+        } else {
+          console.error("File upload failed or `fileUrl` is missing.");
+          setIsUploading(false);
         }
       }
-      console.log(file);
     } catch (error) {
       setIsUploading(false);
-      console.log(error);
+      console.error("File upload error:", error);
     }
   };
+
   return (
     <div className="h-[10vh] bg-[#1c1d25] flex justify-center items-center px-8 mb-6 gap-6">
       <div className="flex-1 flex bg-[#2a2b33] rounded-md items-center gap-5 pr-5">

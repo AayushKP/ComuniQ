@@ -10,13 +10,11 @@ import { useAppStore } from "./store/slices";
 
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
-
   return userInfo ? children : <Navigate to="/auth" />;
 };
 
 const AuthRoute = ({ children }) => {
   const { userInfo } = useAppStore();
-
   return userInfo ? <Navigate to="/chat" /> : children;
 };
 
@@ -30,23 +28,27 @@ const App = () => {
         const res = await apiClient.get(GET_USER_INFO, {
           withCredentials: true,
         });
-        console.log("API Response:", res); // Debugging line
+
         if (res.status === 200 && res.data.id) {
-          setUserInfo(res.data); // Setting user data
+          setUserInfo(res.data);
+          console.log("User info set:", res.data); // Log userInfo after setting it
         } else {
-          setUserInfo(null); // Ensuring null if user data is not valid
+          setUserInfo(null);
+          console.log("User info is null"); // Log when userInfo is null
         }
       } catch (error) {
-        console.error("Error fetching user data:", error); // Debugging line
-        setUserInfo(null); // Set null on error
+        console.error("Error fetching user data:", error);
+        setUserInfo(null);
       } finally {
         setLoading(false);
       }
     };
 
     if (!userInfo) {
-      getUserData(); // Fetch user data if not available
+      console.log("Fetching user info..."); // Log when fetching userInfo
+      getUserData();
     } else {
+      console.log("User info already available:", userInfo); // Log if userInfo already exists
       setLoading(false);
     }
   }, [userInfo, setUserInfo]);

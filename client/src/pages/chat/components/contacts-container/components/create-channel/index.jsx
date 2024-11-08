@@ -4,7 +4,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -12,14 +11,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Lottie from "react-lottie";
-import { animationsDefaultOptions, getColor } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import {
-  CREATE_CHANNEL_ROUTES,
+  CREATE_CHANNEL_ROUTE,
   GET_ALL_CONTACTS_ROUTES,
 } from "@/utils/constants";
 import apiClient from "@/lib/api-client";
@@ -49,19 +45,19 @@ function CreateChannel() {
     try {
       if (channelName.length > 0 && selectedContacts.length > 0) {
         const res = await apiClient.post(
-          CREATE_CHANNEL_ROUTES,
+          CREATE_CHANNEL_ROUTE,
           {
             name: channelName,
             members: selectedContacts.map((contact) => contact.value),
           },
           { withCredentials: true }
         );
-      }
-      if (res.status === 201) {
-        setChannelName("");
-        setSelectedContacts([]);
-        setNewChannelModal(false);
-        addChannel(res.data.channel);
+        if (res.status === 201) {
+          setChannelName("");
+          setSelectedContacts([]);
+          setNewChannelModal(false);
+          addChannel(res.data.channel);
+        }
       }
     } catch (error) {
       console.log(error);
