@@ -45,7 +45,6 @@ function Chat() {
       ) : (
         <ChatContainer />
       )}
-      /*
     </div>
   );
 }
