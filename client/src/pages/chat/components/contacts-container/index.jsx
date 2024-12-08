@@ -91,7 +91,7 @@ const Logo = () => {
       </svg>
 
       <span className="text-4xl md:text-3xl font-bold text-[#bdb220]">
-        COm<span className="text-[#912a2a]">U</span>niQ
+        Com<span className="text-[#912a2a]">U</span>niQ
       </span>
     </div>
   );

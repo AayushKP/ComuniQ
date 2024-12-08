@@ -31,10 +31,8 @@ const App = () => {
 
         if (res.status === 200 && res.data.id) {
           setUserInfo(res.data);
-          console.log("User info set:", res.data); // Log userInfo after setting it
         } else {
           setUserInfo(null);
-          console.log("User info is null"); // Log when userInfo is null
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -45,10 +43,8 @@ const App = () => {
     };
 
     if (!userInfo) {
-      console.log("Fetching user info..."); // Log when fetching userInfo
       getUserData();
     } else {
-      console.log("User info already available:", userInfo); // Log if userInfo already exists
       setLoading(false);
     }
   }, [userInfo, setUserInfo]);

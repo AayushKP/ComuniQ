@@ -70,7 +70,6 @@ function index() {
           setUserInfo({ ...res.data });
           toast.success("Profile updated successfully.");
 
-          // Only navigate to chat if the profile setup is complete
           if (userInfo.profileSetup) {
             navigate("/chat");
           } else {
@@ -111,7 +110,7 @@ function index() {
         });
 
         if (res.status === 200 && res.data.image) {
-          setImage(res.data.image); // Use absolute URL from Cloudinary directly
+          setImage(res.data.image);
           setUserInfo({ ...userInfo, image: res.data.image });
           toast.success("Image added successfully.");
         } else {
