@@ -5,11 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import apiClient from "@/lib/api-client";
 import { useAppStore } from "@/store/slices";
-
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { toast } from "sonner";
 
 function Auth() {
@@ -97,19 +95,19 @@ function Auth() {
 
   return (
     <div className="h-[100vh] w-[100vw] flex items-center justify-center">
-      <div className="h-[80vh] bg-white border-white text-opacity-90 shadow-2xl w-[90vw] md:w-[80vw] lg:w-[70vw] xl:w-[60vw] rounded-3xl grid xl:grid-cols-2 ">
-        <div className="flex flex-col gap-10 items-center justify-center">
+      <div className="h-[80vh] bg-white border-white text-opacity-90 shadow-2xl w-[90vw] md:w-[80vw] lg:w-[70vw] xl:w-[60vw] rounded-3xl grid xl:grid-cols-2">
+        <div className="flex flex-col gap-10 items-center justify-center px-5 md:px-10 lg:px-20">
           <div className="flex items-center justify-center flex-col">
             <div className="flex items-center justify-center">
-              <h1 className="text-5xl font-bold md:-text-6xl">Welcome</h1>
+              <h1 className="text-5xl font-bold md:text-6xl">Welcome</h1>
               <img src={Victory} alt="Victory emoji" className="h-[100px]" />
             </div>
             <p className="font-medium text-center">
-              Fill in the details to get started !
+              Fill in the details to get started!
             </p>
           </div>
           <div className="flex items-center justify-center w-full">
-            <Tabs className="w-3/4" defaultValue="login">
+            <Tabs className="w-full" defaultValue="login">
               <TabsList className="bg-transparent rounded-none w-full">
                 <TabsTrigger
                   value="login"
@@ -119,12 +117,15 @@ function Auth() {
                 </TabsTrigger>
                 <TabsTrigger
                   value="signup"
-                  className="data-[state=active]:text-black border-b-2 rounded-none w-full  data-[state=active]:border-b-purple-500 transition-all duration-300"
+                  className="data-[state=active]:text-black border-b-2 rounded-none w-full data-[state=active]:border-b-purple-500 transition-all duration-300"
                 >
                   Signup
                 </TabsTrigger>
               </TabsList>
-              <TabsContent className="flex flex-col gap-5 mt-10" value="login">
+              <TabsContent
+                className="flex flex-col gap-5 mt-10 max-w-[400px] w-full mx-auto"
+                value="login"
+              >
                 <Input
                   placeholder="Email"
                   type="email"
@@ -140,15 +141,17 @@ function Auth() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <Button
-                  className="rounded-full p-6 text-white bg-black hover:bg-gray-800 
-                   "
+                  className="rounded-full p-6 text-white bg-black hover:bg-gray-800"
                   onClick={handleLogin}
                 >
                   Login
                 </Button>
               </TabsContent>
 
-              <TabsContent className="flex flex-col gap-5 " value="signup">
+              <TabsContent
+                className="flex flex-col gap-5 max-w-[400px] w-full mx-auto"
+                value="signup"
+              >
                 <Input
                   placeholder="Email"
                   type="email"
@@ -171,7 +174,7 @@ function Auth() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 <Button
-                  className="rounded-full p-6 text-white bg-black hover:bg-gray-800 "
+                  className="rounded-full p-6 text-white bg-black hover:bg-gray-800"
                   onClick={handleSignup}
                 >
                   Signup
@@ -181,10 +184,11 @@ function Auth() {
           </div>
         </div>
         <div className="hidden xl:flex justify-center px-3 items-center">
-          <img className="" src={Background} alt="background-login" />
+          <img className="max-w-full" src={Background} alt="background-login" />
         </div>
       </div>
     </div>
   );
 }
+
 export default Auth;
