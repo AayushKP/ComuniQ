@@ -99,7 +99,7 @@ function MessageContainer() {
   const downloadFile = async (url) => {
     setIsDownloading(true);
     setFileDownloadProgress(0);
-    const response = await apiClient.get(`${HOST}/${url}`, {
+    const response = await apiClient.get(url, {
       responseType: "blob",
       onDownloadProgress: (progressEvent) => {
         const { loaded, total } = progressEvent;
@@ -151,12 +151,7 @@ function MessageContainer() {
                 setImageUrl(message.fileUrl);
               }}
             >
-              <img
-                src={`${HOST}/${message.fileUrl}`}
-                height={300}
-                width={300}
-                alt=""
-              />
+              <img src={message.fileUrl} height={300} width={300} alt="" />
             </div>
           ) : (
             <div className="flex items-center justify-center gap-4">
@@ -214,12 +209,7 @@ function MessageContainer() {
                   setImageUrl(message.fileUrl);
                 }}
               >
-                <img
-                  src={`${HOST}/${message.fileUrl}`}
-                  height={300}
-                  width={300}
-                  alt=""
-                />
+                <img src={message.fileUrl} height={300} width={300} alt="" />
               </div>
             ) : (
               <div className="flex items-center justify-center gap-4">
@@ -242,7 +232,7 @@ function MessageContainer() {
             <Avatar className="h-8 w-8 rounded-full overflow-hidden">
               {message.sender.image && (
                 <AvatarImage
-                  src={`${HOST}/${message.sender.image}`}
+                  src={message.sender.image}
                   alt="profile"
                   className="object-cover w-full h-full bg-black"
                 />
@@ -281,11 +271,7 @@ function MessageContainer() {
         {showImage && (
           <div className="fixed z-[1000] top-0 left-0 h-[100vh] w-[100vw] flex items-center justify-center backdrop-blur-lg flex-col">
             <div>
-              <img
-                src={`${HOST}/${imageUrl}`}
-                alt=""
-                className="h-[80vh] w-full bg-cover"
-              />
+              <img src={imageUrl} alt="" className="h-[80vh] w-full bg-cover" />
               <div className="flex gap-5 fixed top-0 mt-5">
                 <button
                   className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"

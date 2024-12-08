@@ -35,7 +35,7 @@ function index() {
       setSelectedColor(userInfo.color);
     }
     if (userInfo.image) {
-      setImage(`${HOST}/${userInfo.image}`);
+      setImage(userInfo.image);
     }
   }, [userInfo]);
 
@@ -104,14 +104,14 @@ function index() {
 
       if (file) {
         const formData = new FormData();
-
         formData.append("profile-image", file);
-        console.log(formData.append);
+
         const res = await apiClient.post(ADD_IMAGE_ROUTE, formData, {
           withCredentials: true,
         });
+
         if (res.status === 200 && res.data.image) {
-          console.log(res.data.image);
+          setImage(res.data.image); // Use absolute URL from Cloudinary directly
           setUserInfo({ ...userInfo, image: res.data.image });
           toast.success("Image added successfully.");
         } else {
@@ -122,6 +122,7 @@ function index() {
       console.log(error);
     }
   };
+
 
   const handleDeleteImage = async () => {
     try {

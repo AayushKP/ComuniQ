@@ -40,7 +40,7 @@ function CreateChannel() {
       setAllContacts(response.data.contacts);
     };
     getData();
-  }, [allContacts]);
+  }, []);
 
   const createChannel = async () => {
     try {

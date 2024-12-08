@@ -1,7 +1,8 @@
 import { compare } from "bcrypt";
 import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
-import { renameSync, unlinkSync } from "fs";
+import cloudinary from "../config/cloudinary.js";
+import { unlink } from "fs/promises";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -150,34 +151,35 @@ export const updateProfile = async (req, res, next) => {
   }
 };
 
-export const addProfileImage = async (req, res, next) => {
+export const addProfileImage = async (req, res) => {
   try {
     if (!req.file) {
-      res.status(400).send("File is required");
+      return res.status(400).send("File is required.");
     }
-    const date = Date.now();
-    let fileName = "uploads/profiles/" + date + req.file.originalname;
-    renameSync(req.file.path, fileName);
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "communique/profile-images",
+    });
 
     const updatedUser = await User.findByIdAndUpdate(
       req.userId,
-      {
-        image: fileName,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
+      { image: result.secure_url },
+      { new: true, runValidators: true }
     );
-    return res.status(200).json({
-      image: updatedUser.image,
-    });
-  } catch {}
+
+    // Optionally delete the local file
+    await unlink(req.file.path);
+
+    return res.status(200).json({ image: updatedUser.image });
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 export const removeProfileImage = async (req, res, next) => {
   try {
-    const userId = req.userId; // Use userId from the request object
+    const userId = req.userId;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -185,7 +187,11 @@ export const removeProfileImage = async (req, res, next) => {
     }
 
     if (user.image) {
-      unlinkSync(user.image);
+      // Extract public_id from URL for deletion
+      const publicId = user.image.split("/").slice(-1)[0].split(".")[0];
+      await cloudinary.uploader.destroy(
+        `communique/profile-images/${publicId}`
+      );
     }
 
     user.image = null;
@@ -197,6 +203,7 @@ export const removeProfileImage = async (req, res, next) => {
     return res.status(500).send("Internal Server Error");
   }
 };
+
 
 export const logout = async (req, res, next) => {
   try {
