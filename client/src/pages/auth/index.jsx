@@ -84,7 +84,6 @@ function Auth() {
             password,
           },
           { withCredentials: true }
-          //only when it's true we'll be receiving cookie
         );
         if (res.status === 201) {
           setUserInfo(res.data.user);
