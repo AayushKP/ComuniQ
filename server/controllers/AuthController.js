@@ -119,7 +119,6 @@ export const updateProfile = async (req, res, next) => {
         .send("FirstName, LastName, and Color are required");
     }
 
-    // Use an update object and conditionally add fields to prevent overwriting with undefined
     const updateData = { profileSetup: true };
 
     if (firstName) updateData.firstName = firstName;
