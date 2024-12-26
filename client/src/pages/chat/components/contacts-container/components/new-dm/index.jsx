@@ -17,11 +17,7 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import {
-  GET_CONTACTS_ROUTES,
-  HOST,
-  SEARCH_CONTACTS_ROUTES,
-} from "@/utils/constants";
+import { GET_CONTACTS_ROUTES, SEARCH_CONTACTS_ROUTES } from "@/utils/constants";
 import apiClient from "@/lib/api-client";
 import { useAppStore } from "@/store/slices";
 

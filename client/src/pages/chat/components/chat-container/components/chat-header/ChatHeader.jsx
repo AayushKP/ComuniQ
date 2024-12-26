@@ -3,7 +3,6 @@ import { RiCloseFill } from "react-icons/ri";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { getColor } from "@/lib/utils";
-import { useEffect } from "react";
 import { HOST } from "@/utils/constants";
 import { useAppStore } from "@/store/slices";
 
