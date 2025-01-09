@@ -3,6 +3,7 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import apiClient from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constants";
 import { useAppStore } from "./store/slices";
+import { ClipLoader } from "react-spinners"; // Importing a spinner from react-spinners
 
 // Lazy-loaded components
 const Auth = lazy(() => import("./pages/auth"));
@@ -62,8 +63,8 @@ const App = () => {
     <BrowserRouter>
       <Suspense
         fallback={
-          <div className="text-white flex h-screen justify-center items-center text-4xl font-semibold font-mono">
-            Loading...
+          <div className="flex h-screen justify-center items-center">
+            <ClipLoader color="#3498db" size={50} /> {/* Using the spinner */}
           </div>
         }
       >
