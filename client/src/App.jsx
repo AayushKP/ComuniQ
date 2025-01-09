@@ -1,11 +1,13 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Auth from "./pages/auth";
-import Chat from "./pages/chat";
-import Profile from "./pages/profile";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import apiClient from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constants";
 import { useAppStore } from "./store/slices";
+
+// Lazy-loaded components
+const Auth = lazy(() => import("./pages/auth"));
+const Chat = lazy(() => import("./pages/chat"));
+const Profile = lazy(() => import("./pages/profile"));
 
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
@@ -58,33 +60,41 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/auth"
-          element={
-            <AuthRoute>
-              <Auth />
-            </AuthRoute>
-          }
-        />
-        <Route path="*" element={<Navigate to="/auth" />} />
-        <Route
-          path="/chat"
-          element={
-            <PrivateRoute>
-              <Chat />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
+      <Suspense
+        fallback={
+          <div className="text-white flex h-screen justify-center items-center text-4xl font-semibold font-mono">
+            Loading...
+          </div>
+        }
+      >
+        <Routes>
+          <Route
+            path="/auth"
+            element={
+              <AuthRoute>
+                <Auth />
+              </AuthRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/auth" />} />
+          <Route
+            path="/chat"
+            element={
+              <PrivateRoute>
+                <Chat />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 };
