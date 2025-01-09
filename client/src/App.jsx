@@ -53,8 +53,8 @@ const App = () => {
 
   if (loading) {
     return (
-      <div className="text-white flex h-screen justify-center items-center text-4xl font-semibold font-mono">
-        Loading...
+      <div className="text-white flex h-screen justify-center items-center text-2xl font-semibold font-mono">
+        Please wait ...
       </div>
     );
   }
