@@ -20,7 +20,7 @@ console.log("DATABASE_URL:", databaseURL);
 
 app.use(
   cors({
-    origin: "https://chat-comuniq.vercel.app",
+    origin: process.env.ORIGIN,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
