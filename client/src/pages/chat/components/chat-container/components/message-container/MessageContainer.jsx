@@ -142,9 +142,9 @@ function MessageContainer() {
         <div
           className={`${
             message.sender !== selectedChatData._id
-              ? "bg-[#328aa9]/5 text-[#c6c451]/90 border-[#bdcd46]/50"
+              ? "bg-[#328aa9]/5 text-white border-[#bdcd46]/50"
               : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
-          } border inline-block p-4 rounded-xl my-1 max-w-[50%] break-words`}
+          } border inline-block p-4 rounded-2xl my-1 max-w-[50%] break-words`}
         >
           {message.content}
         </div>
@@ -155,7 +155,7 @@ function MessageContainer() {
             message.sender !== selectedChatData._id
               ? "bg-[#328aa9]/5 text-[#c6c451]/90 border-[#bdcd46]/50"
               : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
-          } border inline-block p-4 rounded-xl my-1 max-w-[50%] break-words`}
+          } border inline-block p-4 rounded-2xl my-1 max-w-[50%] break-words`}
         >
           {checkImage(message.fileUrl) ? (
             <div
@@ -202,7 +202,7 @@ function MessageContainer() {
               message.sender._id === userInfo.id
                 ? "bg-[#328aa9]/5 text-[#c6c451]/90 border-[#bdcd46]/50"
                 : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
-            } border inline-block p-4 rounded-xl my-1 max-w-[50%] break-words ml-9`}
+            } border inline-block p-4 rounded-2xl my-1 max-w-[50%] break-words ml-9`}
           >
             {message.content}
           </div>
@@ -213,7 +213,7 @@ function MessageContainer() {
               message.sender._id === userInfo._id
                 ? "bg-[#328aa9]/5 text-[#c6c451]/90 border-[#bdcd46]/50"
                 : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
-            } border inline-block p-4 rounded-xl my-1 max-w-[50%] break-words`}
+            } border inline-block p-4 rounded-2xl my-1 max-w-[50%] break-words`}
           >
             {checkImage(message.fileUrl) ? (
               <div
