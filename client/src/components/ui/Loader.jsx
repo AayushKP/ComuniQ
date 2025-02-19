@@ -3,7 +3,7 @@ import { ClipLoader } from "react-spinners";
 
 export default function Loader() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-500 to-blue-500">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-800 to-black">
       <ClipLoader
         color="#ffffff"
         size={50}
@@ -11,7 +11,7 @@ export default function Loader() {
         className="mb-4"
       />
       <p className="text-white font-mono text-lg animate-pulse">
-        Loading beautiful experience...
+        Please Wait ...
       </p>
     </div>
   );
