@@ -8,8 +8,8 @@ import { useAppStore } from "@/store/slices";
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner"; // or import your shadcn toast hook/component
-import { Loader2 } from "lucide-react"; // spinner icon
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react"; 
 
 function Auth() {
   const { setUserInfo } = useAppStore();
