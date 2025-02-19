@@ -53,18 +53,25 @@ const App = () => {
   }, [userInfo, setUserInfo]);
 
   if (loading) {
-    return <Loader />;
+    return (
+      <div>
+        {" "}
+        <ClipLoader
+          color="#ffffff"
+          size={50}
+          speedMultiplier={0.8}
+          className="mb-4"
+        />
+        <p className="text-white font-mono text-lg animate-pulse">
+          Server setting up...
+        </p>
+      </div>
+    );
   }
 
   return (
     <BrowserRouter>
-      <Suspense
-        fallback={
-          <div>
-            <Loader />
-          </div>
-        }
-      >
+      <Suspense fallback={Loader}>
         <Routes>
           <Route
             path="/auth"
