@@ -1,18 +1,32 @@
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
+import moment from "moment/moment";
+import { MdFolderZip } from "react-icons/md";
+import { IoMdArrowRoundDown } from "react-icons/io";
+import { IoCloseSharp } from "react-icons/io5";
 import apiClient from "@/lib/api-client";
 import { useAppStore } from "@/store/slices";
 import {
   GET_ALL_MESSAGES_ROUTE,
   GET_CHANNEL_MESSAGES,
-  HOST,
 } from "@/utils/constants";
-import moment from "moment/moment";
-import { useEffect, useRef } from "react";
-import { MdFolderZip } from "react-icons/md";
-import { IoMdArrowRoundDown } from "react-icons/io";
-import { useState } from "react";
-import { IoCloseSharp } from "react-icons/io5";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { getColor } from "@/lib/utils";
+import Loader from "@/components/ui/Loader";
+
+const Avatar = lazy(() =>
+  import("@/components/ui/avatar").then((module) => ({
+    default: module.Avatar,
+  }))
+);
+const AvatarImage = lazy(() =>
+  import("@/components/ui/avatar").then((module) => ({
+    default: module.AvatarImage,
+  }))
+);
+const AvatarFallback = lazy(() =>
+  import("@/components/ui/avatar").then((module) => ({
+    default: module.AvatarFallback,
+  }))
+);
 
 function MessageContainer() {
   const scrollRef = useRef();
@@ -29,15 +43,14 @@ function MessageContainer() {
 
   const [showImage, setShowImage] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
+
   useEffect(() => {
     const getMessages = async () => {
       try {
         const response = await apiClient.post(
           GET_ALL_MESSAGES_ROUTE,
           { id: selectedChatData._id },
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
         if (response.data.messages) {
           setSelectedChatMessages(response.data.messages);
@@ -55,26 +68,6 @@ function MessageContainer() {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [selectedChatMessages]);
-
-  const renderMessages = () => {
-    let lastDate = null;
-    return selectedChatMessages.map((message, index) => {
-      const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
-      const showDate = messageDate !== lastDate;
-      lastDate = messageDate;
-      return (
-        <div key={message._id}>
-          {showDate && (
-            <div className="text-center text-gray my-2">
-              {moment(message.timestamp).format("LL")}
-            </div>
-          )}
-          {selectedChatType === "contact" && renderDMMessages(message)}
-          {selectedChatType === "channel" && renderChannelMessages(message)}
-        </div>
-      );
-    });
-  };
 
   const getChannelMessages = async () => {
     try {
@@ -118,6 +111,27 @@ function MessageContainer() {
     setIsDownloading(false);
     setFileDownloadProgress(0);
   };
+
+  const renderMessages = () => {
+    let lastDate = null;
+    return selectedChatMessages.map((message) => {
+      const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
+      const showDate = messageDate !== lastDate;
+      lastDate = messageDate;
+      return (
+        <div key={message._id}>
+          {showDate && (
+            <div className="text-center text-gray my-2">
+              {moment(message.timestamp).format("LL")}
+            </div>
+          )}
+          {selectedChatType === "contact" && renderDMMessages(message)}
+          {selectedChatType === "channel" && renderChannelMessages(message)}
+        </div>
+      );
+    });
+  };
+
   const renderDMMessages = (message) => (
     <div
       className={`${
@@ -155,7 +169,7 @@ function MessageContainer() {
             </div>
           ) : (
             <div className="flex items-center justify-center gap-4">
-              <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3 ">
+              <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3">
                 <MdFolderZip />
               </span>
               <span>{message.fileUrl.split("/").pop()}</span>
@@ -213,7 +227,7 @@ function MessageContainer() {
               </div>
             ) : (
               <div className="flex items-center justify-center gap-4">
-                <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3 ">
+                <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3">
                   <MdFolderZip />
                 </span>
                 <span>{message.fileUrl.split("/").pop()}</span>
@@ -229,27 +243,28 @@ function MessageContainer() {
         )}
         {message.sender._id !== userInfo.id ? (
           <div className="flex items-center justify-start gap-3">
-            <Avatar className="h-8 w-8 rounded-full overflow-hidden">
-              {message.sender.image && (
-                <AvatarImage
-                  src={message.sender.image}
-                  alt="profile"
-                  className="object-cover w-full h-full bg-black"
-                />
-              )}
-              <AvatarFallback
-                className={`uppercase h-8 w-8 text-lg  flex items-center justify-center rounded-full ${getColor(
-                  message.sender.color
-                )}`}
-              >
-                {message.sender.firstName
-                  ? message.sender.firstName.split("").shift()
-                  : message.sender.email.split("").shift()}
-              </AvatarFallback>
-            </Avatar>
+            <Suspense fallback={<Loader />}>
+              <Avatar className="h-8 w-8 rounded-full overflow-hidden">
+                {message.sender.image && (
+                  <AvatarImage
+                    src={message.sender.image}
+                    alt="profile"
+                    className="object-cover w-full h-full bg-black"
+                  />
+                )}
+                <AvatarFallback
+                  className={`uppercase h-8 w-8 text-lg flex items-center justify-center rounded-full ${getColor(
+                    message.sender.color
+                  )}`}
+                >
+                  {message.sender.firstName
+                    ? message.sender.firstName.split("").shift()
+                    : message.sender.email.split("").shift()}
+                </AvatarFallback>
+              </Avatar>
+            </Suspense>
             <span className="text-sm text-white/60">
               {`${message.sender.firstName} ${message.sender.lastName}`}
-              {console.log(message.sender)}
             </span>
             <span className="text-xs text-white/60">
               {moment(message.timestamp).format("LT")}
@@ -275,9 +290,7 @@ function MessageContainer() {
               <div className="flex gap-5 fixed top-0 mt-5">
                 <button
                   className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
-                  onClick={() => {
-                    downloadFile(imageUrl);
-                  }}
+                  onClick={() => downloadFile(imageUrl)}
                 >
                   <IoMdArrowRoundDown />
                 </button>
