@@ -3,7 +3,7 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import apiClient from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constants";
 import { useAppStore } from "./store/slices";
-import { ClipLoader } from "react-spinners"; // Importing a spinner from react-spinners
+import { ClipLoader } from "react-spinners"; 
 
 // Lazy-loaded components
 const Auth = lazy(() => import("./pages/auth"));
