@@ -23,7 +23,7 @@ const signup = async (req, res, next) => {
     });
 
     if (existingUser) {
-      return res.status(400).send("Email already resgistered");
+      return res.status(400).json({ message: "Email already resgistered" });
     }
     const user = await User.create({
       email,
@@ -51,18 +51,20 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).send("Email and Password are required");
+      return res
+        .status(400)
+        .json({ message: "Email and Password are required" });
     }
 
     const user = await User.findOne({
       email,
     });
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).json({ message: "User not found" });
     }
     const auth = await compare(password, user.password);
     if (!auth) {
-      return res.status(400).send("Password is wrong");
+      return res.status(400).json({ message: "Password is wrong" });
     }
     res.cookie("jwt", createToken(email, user.id), {
       maxAge,
