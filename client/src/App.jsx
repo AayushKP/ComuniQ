@@ -60,8 +60,8 @@ const App = () => {
     <BrowserRouter>
       <Suspense
         fallback={
-          <div className="flex h-screen justify-center items-center">
-            <ClipLoader color="#3498db" size={50} /> {/* Using the spinner */}
+          <div>
+            <Loader />
           </div>
         }
       >
