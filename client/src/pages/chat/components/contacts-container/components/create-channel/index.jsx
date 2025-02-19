@@ -22,6 +22,7 @@ import apiClient from "@/lib/api-client";
 import { useAppStore } from "@/store/slices";
 import { Button } from "@/components/ui/button";
 import MultipleSelector from "@/components/ui/multipleselect";
+import { toast } from "sonner";
 
 function CreateChannel() {
   const { setSelectedChatType, setSelectedChatData, addChannel } =
@@ -57,6 +58,7 @@ function CreateChannel() {
           setSelectedContacts([]);
           setNewChannelModal(false);
           addChannel(res.data.channel);
+          toast("Channel Created!");
         }
       }
     } catch (error) {
@@ -80,7 +82,7 @@ function CreateChannel() {
         </Tooltip>
       </TooltipProvider>
       <Dialog open={newChannelModal} onOpenChange={setNewChannelModal}>
-        <DialogContent className="bg-[#181920] border-none text-white w-[400px] h-[400px] flex flex-col">
+        <DialogContent className="bg-[#101010] border-none text-white w-[400px] h-[400px] flex flex-col">
           <DialogHeader>
             <DialogTitle>
               Please fill up the details for new channel.

@@ -102,7 +102,6 @@ const MultipleSelector = React.forwardRef(
               }
             }
           }
-          // This is not a default behavior of the <input /> field
           if (e.key === "Escape") {
             input.blur();
           }
@@ -118,7 +117,6 @@ const MultipleSelector = React.forwardRef(
     }, [value]);
 
     useEffect(() => {
-      /** If `onSearch` is provided, do not trigger options updated. */
       if (!arrayOptions || onSearch) {
         return;
       }
@@ -184,12 +182,10 @@ const MultipleSelector = React.forwardRef(
         </CommandItem>
       );
 
-      // For normal creatable
       if (!onSearch && inputValue.length > 0) {
         return Item;
       }
 
-      // For async search creatable. avoid showing creatable item before loading at first.
       if (onSearch && debouncedSearchTerm.length > 0 && !isLoading) {
         return Item;
       }
@@ -200,7 +196,6 @@ const MultipleSelector = React.forwardRef(
     const EmptyItem = React.useCallback(() => {
       if (!emptyIndicator) return undefined;
 
-      // For async search that showing emptyIndicator
       if (onSearch && !creatable && Object.keys(options).length === 0) {
         return (
           <CommandItem value="-" disabled>
@@ -217,7 +212,6 @@ const MultipleSelector = React.forwardRef(
       [options, selected]
     );
 
-    /** Avoid Creatable Selector freezing or lagging when paste a long string. */
     const commandFilter = React.useCallback(() => {
       if (commandProps?.filter) {
         return commandProps.filter;
@@ -228,7 +222,6 @@ const MultipleSelector = React.forwardRef(
           return value.toLowerCase().includes(search.toLowerCase()) ? 1 : -1;
         };
       }
-      // Using default filter in `cmdk`. We don't have to provide it.
       return undefined;
     }, [creatable, commandProps?.filter]);
 
@@ -247,7 +240,7 @@ const MultipleSelector = React.forwardRef(
           commandProps?.shouldFilter !== undefined
             ? commandProps.shouldFilter
             : !onSearch
-        } // When onSearch is provided, we don't want to filter the options. You can still override it.
+        } 
         filter={commandFilter()}
       >
         <div
@@ -270,7 +263,7 @@ const MultipleSelector = React.forwardRef(
                 <Badge
                   key={option.value}
                   className={cn(
-                    "data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground bg-purple-500 p-2",
+                    "data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground bg-gray-900 py-2 px-3",
                     "data-[fixed]:bg-muted-foreground data-[fixed]:text-muted data-[fixed]:hover:bg-muted-foreground",
                     badgeClassName
                   )}
@@ -299,7 +292,6 @@ const MultipleSelector = React.forwardRef(
                 </Badge>
               );
             })}
-            {/* Avoid having the "Search" Icon */}
             <CommandPrimitive.Input
               {...inputProps}
               ref={inputRef}

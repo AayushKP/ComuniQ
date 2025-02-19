@@ -79,7 +79,7 @@ function NewDM() {
         </Tooltip>
       </TooltipProvider>
       <Dialog open={openNewContactModel} onOpenChange={setOpenNewContactModel}>
-        <DialogContent className="bg-[#181920] border-none text-white w-[400px] h-[400px] flex flex-col">
+        <DialogContent className="bg-[#101010] border-none text-white w-[400px] h-[400px] flex flex-col">
           <DialogHeader>
             <DialogTitle>Please Select a contact</DialogTitle>
             <DialogDescription></DialogDescription>
