@@ -35,12 +35,12 @@ function ChatHeader() {
                 )}
               </Avatar>
             ) : (
-              <div className="bg-[#ffffff22] h-10 w-10 flex items-center justify-center rounded-full">
+              <div className="bg-gray-900 border-blue-800/40 h-12 w-12 flex items-center justify-center rounded-full">
                 #
               </div>
             )}
           </div>
-          <div>
+          <div className="justify-center items-center">
             {selectedChatType === "channel" && selectedChatData.name}
             {selectedChatType === "contact" && selectedChatData.firstName
               ? `${selectedChatData.firstName}  ${selectedChatData.lastName}`
