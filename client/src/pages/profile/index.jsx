@@ -170,7 +170,6 @@ function index() {
                 </div>
               )}
             </Avatar>
-            {/* check if it is hovered if it is hovered then render something */}
             {hovered && (
               <div
                 onClick={image ? handleDeleteImage : handleFileInputClick}

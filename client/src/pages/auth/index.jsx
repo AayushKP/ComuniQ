@@ -5,12 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import apiClient from "@/lib/api-client";
 import { useAppStore } from "@/store/slices";
-
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { toast } from "sonner";
+import { toast } from "sonner"; // or import your shadcn toast hook/component
+import { Loader2 } from "lucide-react"; // spinner icon
 
 function Auth() {
   const { setUserInfo } = useAppStore();
@@ -18,6 +17,10 @@ function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Loading states for each action
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [signupLoading, setSignupLoading] = useState(false);
 
   const validateSignup = () => {
     if (!email.length) {
@@ -33,7 +36,7 @@ function Auth() {
       return false;
     }
     if (password !== confirmPassword) {
-      toast.error("Password and Confirm Password must be same");
+      toast.error("Password and Confirm Password must be the same");
       return false;
     }
     return true;
@@ -52,17 +55,17 @@ function Auth() {
   };
 
   const handleLogin = async () => {
-    if (validateLogin()) {
+    if (!validateLogin()) return;
+    setLoginLoading(true);
+    try {
       const res = await apiClient.post(
         LOGIN_ROUTE,
-        {
-          email,
-          password,
-        },
+        { email, password },
         { withCredentials: true }
       );
       if (res.data.user.id) {
         setUserInfo(res.data.user);
+        toast.success("Logged In");
         if (res.data.user.profileSetup) {
           navigate("/chat");
         } else {
@@ -70,28 +73,39 @@ function Auth() {
         }
       }
       console.log(res);
-      alert("Logged In");
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "An error occurred during login.";
+      console.log("error", message);
+      toast.error(message);
+    } finally {
+      setLoginLoading(false);
     }
   };
 
   const handleSignup = async () => {
+    if (!validateSignup()) return;
+    setSignupLoading(true);
     try {
-      if (validateSignup()) {
-        const res = await apiClient.post(
-          SIGNUP_ROUTE,
-          {
-            email,
-            password,
-          },
-          { withCredentials: true }
-        );
-        if (res.status === 201) {
-          setUserInfo(res.data.user);
-          navigate("/profile");
-        }
+      const res = await apiClient.post(
+        SIGNUP_ROUTE,
+        { email, password },
+        { withCredentials: true }
+      );
+      if (res.status === 201) {
+        setUserInfo(res.data.user);
+        toast.success("Signed Up");
+        navigate("/profile");
       }
     } catch (error) {
-      throw error;
+      const message =
+        error.response?.message || "An error occurred during signup.";
+      toast.error(message);
+      console.log("hi");
+    } finally {
+      setSignupLoading(false);
     }
   };
 
@@ -105,7 +119,7 @@ function Auth() {
               <img src={Victory} alt="Victory emoji" className="h-[100px]" />
             </div>
             <p className="font-medium text-center">
-              Fill in the details to get started !
+              Fill in the details to get started!
             </p>
           </div>
           <div className="flex items-center justify-center w-full">
@@ -119,7 +133,7 @@ function Auth() {
                 </TabsTrigger>
                 <TabsTrigger
                   value="signup"
-                  className="data-[state=active]:text-black border-b-2 rounded-none w-full  data-[state=active]:border-b-purple-500 transition-all duration-300"
+                  className="data-[state=active]:text-black border-b-2 rounded-none w-full data-[state=active]:border-b-purple-500 transition-all duration-300"
                 >
                   Signup
                 </TabsTrigger>
@@ -140,15 +154,22 @@ function Auth() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <Button
-                  className="rounded-full p-6 text-white bg-black hover:bg-gray-800 
-                   "
+                  className="rounded-full p-6 text-white bg-black hover:bg-gray-800"
                   onClick={handleLogin}
+                  disabled={loginLoading}
                 >
-                  Login
+                  {loginLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Logging in...
+                    </>
+                  ) : (
+                    "Login"
+                  )}
                 </Button>
               </TabsContent>
 
-              <TabsContent className="flex flex-col gap-5 " value="signup">
+              <TabsContent className="flex flex-col gap-5" value="signup">
                 <Input
                   placeholder="Email"
                   type="email"
@@ -171,20 +192,29 @@ function Auth() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 <Button
-                  className="rounded-full p-6 text-white bg-black hover:bg-gray-800 "
+                  className="rounded-full p-6 text-white bg-black hover:bg-gray-800"
                   onClick={handleSignup}
+                  disabled={signupLoading}
                 >
-                  Signup
+                  {signupLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating account...
+                    </>
+                  ) : (
+                    "Signup"
+                  )}
                 </Button>
               </TabsContent>
             </Tabs>
           </div>
         </div>
         <div className="hidden xl:flex justify-center px-3 items-center">
-          <img className="" src={Background} alt="background-login" />
+          <img src={Background} alt="background-login" />
         </div>
       </div>
     </div>
   );
 }
+
 export default Auth;
