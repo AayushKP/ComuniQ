@@ -62,7 +62,7 @@ function ContactList({ contacts, isChannel = false }) {
               </Avatar>
             )}
             {isChannel && (
-              <div className="bg-gray-900 border border-blue-900/70 h-10 w-10 flex items-center justify-center rounded-full">
+              <div className="bg-gray-900 border border-blue-900/40 h-10 w-10 flex items-center justify-center rounded-full">
                 %
               </div>
             )}
