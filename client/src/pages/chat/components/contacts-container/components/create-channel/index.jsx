@@ -22,7 +22,6 @@ import apiClient from "@/lib/api-client";
 import { useAppStore } from "@/store/slices";
 import { Button } from "@/components/ui/button";
 import MultipleSelector from "@/components/ui/multipleselect";
-import { all } from "axios";
 
 function CreateChannel() {
   const { setSelectedChatType, setSelectedChatData, addChannel } =

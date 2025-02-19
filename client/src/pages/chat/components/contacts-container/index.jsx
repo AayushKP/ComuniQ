@@ -37,7 +37,7 @@ function ContactsContainer() {
   }, [setChannels, setDirectMessagesContacts]);
 
   return (
-    <div className="relative md:w-[30vw] lg:w-[25vw] xl:w-[20vw] bg-[#1b1c24] border-r-2 border-[#2f303b] w-full">
+    <div className="relative md:w-[30vw] bg-gradient-to-b from-gray-800 to-gray-950 lg:w-[25vw] xl:w-[20vw] border-r-2 border-[#2f303b] w-full">
       <div className="pt-3">
         <Logo />
       </div>

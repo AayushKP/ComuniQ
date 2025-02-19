@@ -122,8 +122,8 @@ function MessageBar() {
   };
 
   return (
-    <div className="h-[10vh] bg-[#1c1d25] flex justify-center items-center px-8 mb-6 gap-6">
-      <div className="flex-1 flex bg-[#2a2b33] rounded-md items-center gap-5 pr-5">
+    <div className="h-[10vh] flex justify-center items-center px-8 mb-6 gap-6">
+      <div className="flex-1 flex bg-gray-900 rounded-md items-center gap-5 pr-5">
         <input
           type="text"
           className="flex-1 p-5 bg-transparent rounded-md focus:border-none focus:outline-none"
@@ -162,7 +162,7 @@ function MessageBar() {
         </div>
       </div>
       <button
-        className="bg-[#FFCC43] flex items-center justify-center p-5 gap-2 focus:border-none rounded-xl hover:bg-[#a79b1d] focus:bg-[#a79b1d]"
+        className="bg-[#FFCC43] flex items-center justify-center p-5 gap-2 focus:border-none rounded-xl hover:bg-[#a79b1d] focus:bg-[#a79c1d7d]"
         onClick={handleSendMessage}
       >
         <IoSend className="text-2xl text-white" />
