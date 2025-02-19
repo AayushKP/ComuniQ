@@ -139,8 +139,8 @@ function index() {
   };
 
   return (
-    <div className="bg-[#1b1c24] h-[100vh] flex items-center justify-center flex-col gap-10">
-      <div className="flex flex-col gap-10 w-[80vw] md:w-max">
+    <div className="bg-gradient-to-br from-gray-800 to-black h-[100vh] flex items-center justify-center flex-col gap-10">
+      <div className="bg-gradient-to-r from-gray-900 to-black md:p-10 rounded-xl flex flex-col gap-10 w-[80vw] md:w-max">
         <IoArrowBack
           onClick={handleNavigate}
           className="text-4xl lg:text-6xl text-white/90 cursor-pointer"
@@ -237,7 +237,7 @@ function index() {
         </div>
         <div className="w-full">
           <Button
-            className="h-16 w-full bg-purple-700 hover:bg-purple-900 transition-all duration-300 rounded-xl"
+            className="h-16 w-full bg-[#FFCC43] hover:bg-yellow-500 transition-all duration-300 rounded-xl"
             onClick={saveChanges}
           >
             Save Changes
