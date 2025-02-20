@@ -100,17 +100,17 @@ function Auth() {
 
   return (
     <div className="h-screen flex items-center justify-center font-poppins">
-      <div className="w-full max-w-md md:max-w-lg p-8 bg-neutral-950 text-white rounded-2xl shadow-md">
+      <div className="w-full max-w-md md:max-w-lg min-h-[500px] p-10 bg-neutral-950 text-white rounded-2xl shadow-md">
         <h2 className="text-center text-2xl font-semibold">ComuniQ</h2>
-        <p className="text-center text-gray-400 mt-1 mb-6 font-poppins text-sm">
+        <p className="text-center text-gray-400 mt-1 mb-6 text-sm">
           Enter your credentials to continue
         </p>
 
         <Tabs defaultValue="login">
-          <TabsList className="flex justify-between bg-transparent  mb-4">
+          <TabsList className="flex justify-between bg-transparent mb-4">
             <TabsTrigger
               value="login"
-              className="w-1/2 text-center data-[state=active]:text-white data-[state=active]:bg-black data-[state=active]:rounded-lg border-b rounded-none bg-transparent data-[state=active]:border-b-2  data-[state=active]:border-b-amber-400 "
+              className="w-1/2 text-center data-[state=active]:text-white data-[state=active]:bg-black data-[state=active]:rounded-lg border-b rounded-none bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-amber-400"
             >
               Login
             </TabsTrigger>
@@ -139,7 +139,7 @@ function Auth() {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button
-              className="w-full bg-white hover:bg-neutral-500  text-black py-3 rounded-lg"
+              className="w-full bg-white hover:bg-neutral-500 text-black py-3 rounded-lg"
               onClick={handleLogin}
               disabled={loginLoading}
             >
