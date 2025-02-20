@@ -1,6 +1,5 @@
-//chat slice
 export const createChatSlice = (set, get) => ({
-  sleectedChatType: undefined,
+  selectedChatType: undefined,
   selectedChatData: undefined,
   selectedChatMessages: [],
   directMessagesContacts: [],
@@ -9,80 +8,86 @@ export const createChatSlice = (set, get) => ({
   fileUploadProgress: 0,
   fileDownloadProgress: 0,
   channels: [],
+
   setChannels: (channels) => set({ channels }),
   setIsUploading: (isUploading) => set({ isUploading }),
-  setIsDownloading: (isDowloading) => set({ isDowloading }),
-  setFileUploadProgress: (fileUploadProgress) => set({ fileUploadProgress }),
-  setFileDownloadProgress: (fileDownloadProgress) =>
-    set({ fileDownloadProgress }),
-  setSelectedChatType: (selectedChatType) => set({ selectedChatType }),
-  setSelectedChatData: (selectedChatData) => set({ selectedChatData }),
-  setSelectedChatMessages: (selectedChatMessages) =>
-    set({ selectedChatMessages }),
-  setDirectMessagesContacts: (directMessagesContacts) =>
-    set({ directMessagesContacts }),
-  addChannel: (channel) => {
-    const channels = get().channels;
-    set({ channels: [channel, ...channels] });
-  },
+  setIsDownloading: (isDownloading) => set({ isDownloading }),
+  setFileUploadProgress: (progress) => set({ fileUploadProgress: progress }),
+  setFileDownloadProgress: (progress) =>
+    set({ fileDownloadProgress: progress }),
+  setSelectedChatType: (type) => set({ selectedChatType: type }),
+  setSelectedChatData: (data) => set({ selectedChatData: data }),
+  setSelectedChatMessages: (messages) =>
+    set({ selectedChatMessages: messages }),
+  setDirectMessagesContacts: (contacts) =>
+    set({ directMessagesContacts: contacts }),
+
+  addChannel: (channel) =>
+    set((state) => ({ channels: [channel, ...state.channels] })),
+
   closeChat: () =>
     set({
       selectedChatData: undefined,
       selectedChatType: undefined,
       selectedChatMessages: [],
     }),
+
   addMessage: (message) => {
-    const selectedChatMessages = get().selectedChatMessages;
-    const selectedChatType = get().selectedChatType;
-    set({
+    set((state) => ({
       selectedChatMessages: [
-        ...selectedChatMessages,
+        ...state.selectedChatMessages,
         {
           ...message,
           recipient:
-            selectedChatType === "channel"
+            state.selectedChatType === "channel"
               ? message.recipient
               : message.recipient._id,
           sender:
-            selectedChatType === "channel"
+            state.selectedChatType === "channel"
               ? message.sender
               : message.sender._id,
         },
       ],
+    }));
+  },
+
+  addChannelInChannelList: (message) => {
+    set((state) => {
+      const index = state.channels.findIndex(
+        (channel) => channel._id === message.channelId
+      );
+      if (index !== -1) {
+        const updatedChannels = [
+          state.channels[index],
+          ...state.channels.filter((_, i) => i !== index),
+        ];
+        return { channels: updatedChannels };
+      }
     });
   },
-  addChannelInChannelList: (message) => {
-    const channels = get().channels;
-    const data = channels.find((channel) => channel._id === message.channelId);
-    const index = channels.findIndex(
-      (channel) => channel._id === message.channelId
-    );
-    console.log("Channel data:", data);
-    if (index !== -1 && index !== undefined) {
-      channels.splice(index, 1);
-      channels.unshift(data);
-    }
-  },
-  addContactsInDMContacts: (message) => {
-    const userId = get().userInfo.id;
-    const fromId =
-      message.sender._id === userId
-        ? message.recipient._id
-        : message.sender._id;
 
-    const fromData =
-      message.sender._id === userId ? message.recipient : message.sender;
-    const dmContacts = get().directMessagesContacts;
-    const data = dmContacts.find((contact) => contact._id === fromId);
-    const index = dmContacts.findIndex((contact) => contact._id === fromId);
-    console.log({ data, index, dmContacts, fromData, fromId, userId, message });
-    if (index !== -1 && index !== undefined) {
-      dmContacts.splice(index, 1);
-      dmContacts.unshift(data);
-    } else {
-      console.log("in else condition");
-      dmContacts.unshift(fromData);
-    }
-    set({ directMessagesContacts: dmContacts });
+  addContactsInDMContacts: (message) => {
+    set((state) => {
+      const userId = state.userInfo.id;
+      const fromId =
+        message.sender._id === userId
+          ? message.recipient._id
+          : message.sender._id;
+      const fromData =
+        message.sender._id === userId ? message.recipient : message.sender;
+      const index = state.directMessagesContacts.findIndex(
+        (contact) => contact._id === fromId
+      );
+
+      const updatedContacts =
+        index !== -1
+          ? [
+              state.directMessagesContacts[index],
+              ...state.directMessagesContacts.filter((_, i) => i !== index),
+            ]
+          : [fromData, ...state.directMessagesContacts];
+
+      return { directMessagesContacts: updatedContacts };
+    });
   },
 });
