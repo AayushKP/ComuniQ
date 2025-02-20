@@ -1,5 +1,3 @@
-import Background from "@/assets/Login2.png";
-import Victory from "@/assets/victory.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,7 +7,7 @@ import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react"; 
+import { Loader2 } from "lucide-react";
 
 function Auth() {
   const { setUserInfo } = useAppStore();
@@ -17,38 +15,42 @@ function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  // Loading states for each action
   const [loginLoading, setLoginLoading] = useState(false);
   const [signupLoading, setSignupLoading] = useState(false);
 
+  // Email validation function
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const validateSignup = () => {
-    if (!email.length) {
-      toast.error("Email is required!");
+    if (!email.length || !password.length || !confirmPassword.length) {
+      toast.error("All fields are required!");
       return false;
     }
-    if (!password.length) {
-      toast.error("Password is required!");
+    if (!isValidEmail(email)) {
+      toast.error("Please enter valid email!");
       return false;
     }
-    if (!confirmPassword.length) {
-      toast.error("Confirm Password is empty!");
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
       return false;
     }
     if (password !== confirmPassword) {
-      toast.error("Password and Confirm Password must be the same");
+      toast.error("Passwords do not match");
       return false;
     }
     return true;
   };
 
   const validateLogin = () => {
-    if (!email.length) {
-      toast.error("Email is required!");
+    if (!email.length || !password.length) {
+      toast.error("Email and Password are required!");
       return false;
     }
-    if (!password.length) {
-      toast.error("Password is required!");
+    if (!isValidEmail(email)) {
+      toast.error("Please enter a valid email!");
       return false;
     }
     return true;
@@ -66,20 +68,10 @@ function Auth() {
       if (res.data.user.id) {
         setUserInfo(res.data.user);
         toast.success("Logged In");
-        if (res.data.user.profileSetup) {
-          navigate("/chat");
-        } else {
-          navigate("/profile");
-        }
+        navigate(res.data.user.profileSetup ? "/chat" : "/profile");
       }
-      console.log(res);
     } catch (error) {
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        "An error occurred during login.";
-      console.log("error", message);
-      toast.error(message);
+      toast.error(error.response?.data?.message || "Login failed!");
     } finally {
       setLoginLoading(false);
     }
@@ -96,121 +88,127 @@ function Auth() {
       );
       if (res.status === 201) {
         setUserInfo(res.data.user);
-        toast.success("Signed Up");
+        toast.success("Account Created");
         navigate("/profile");
       }
     } catch (error) {
-      const message =
-        error.response?.message || "An error occurred during signup.";
-      toast.error(message);
-      console.log("hi");
+      toast.error(error.response?.message || "Signup failed!");
     } finally {
       setSignupLoading(false);
     }
   };
 
   return (
-    <div className="h-[100vh] w-[100vw] flex items-center justify-center">
-      <div className="h-[80vh] bg-white border-white text-opacity-90 shadow-2xl w-[90vw] md:w-[80vw] lg:w-[70vw] xl:w-[60vw] rounded-3xl grid xl:grid-cols-2 ">
-        <div className="flex flex-col gap-10 items-center justify-center">
-          <div className="flex items-center justify-center flex-col">
-            <div className="flex items-center justify-center">
-              <h1 className="text-5xl font-bold md:-text-6xl">Welcome</h1>
-              <img src={Victory} alt="Victory emoji" className="h-[100px]" />
-            </div>
-            <p className="font-medium text-center">
-              Fill in the details to get started!
-            </p>
-          </div>
-          <div className="flex items-center justify-center w-full">
-            <Tabs className="w-3/4" defaultValue="login">
-              <TabsList className="bg-transparent rounded-none w-full">
-                <TabsTrigger
-                  value="login"
-                  className="data-[state=active]:text-black border-b-2 rounded-none w-full data-[state=active]:border-b-purple-500 transition-all duration-300"
-                >
-                  Login
-                </TabsTrigger>
-                <TabsTrigger
-                  value="signup"
-                  className="data-[state=active]:text-black border-b-2 rounded-none w-full data-[state=active]:border-b-purple-500 transition-all duration-300"
-                >
-                  Signup
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent className="flex flex-col gap-5 mt-10" value="login">
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  className="rounded-full p-6"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  className="rounded-full p-6"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button
-                  className="rounded-full p-6 text-white bg-black hover:bg-gray-800"
-                  onClick={handleLogin}
-                  disabled={loginLoading}
-                >
-                  {loginLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Logging in...
-                    </>
-                  ) : (
-                    "Login"
-                  )}
-                </Button>
-              </TabsContent>
+    <div className="h-screen flex items-center justify-center font-poppins">
+      <div className="w-full max-w-md md:max-w-lg p-8 bg-neutral-950 text-white rounded-2xl shadow-md">
+        <h2 className="text-center text-2xl font-semibold">ComuniQ</h2>
+        <p className="text-center text-gray-400 mt-1 mb-6 font-poppins text-sm">
+          Enter your credentials to continue
+        </p>
 
-              <TabsContent className="flex flex-col gap-5" value="signup">
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  className="rounded-full p-6"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  className="rounded-full p-6"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <Input
-                  placeholder="Confirm Password"
-                  type="password"
-                  className="rounded-full p-6"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-                <Button
-                  className="rounded-full p-6 text-white bg-black hover:bg-gray-800"
-                  onClick={handleSignup}
-                  disabled={signupLoading}
-                >
-                  {signupLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating account...
-                    </>
-                  ) : (
-                    "Signup"
-                  )}
-                </Button>
-              </TabsContent>
-            </Tabs>
-          </div>
+        <Tabs defaultValue="login">
+          <TabsList className="flex justify-between bg-transparent  mb-4">
+            <TabsTrigger
+              value="login"
+              className="w-1/2 text-center data-[state=active]:text-white data-[state=active]:bg-black data-[state=active]:rounded-lg border-b rounded-none bg-transparent data-[state=active]:border-b-2  data-[state=active]:border-b-amber-400 "
+            >
+              Login
+            </TabsTrigger>
+            <TabsTrigger
+              value="signup"
+              className="w-1/2 text-center data-[state=active]:text-white data-[state=active]:bg-black data-[state=active]:rounded-lg border-b rounded-none bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-amber-400"
+            >
+              Signup
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Login Form */}
+          <TabsContent value="login">
+            <Input
+              placeholder="Email"
+              type="email"
+              className="mb-4 bg-neutral-900 border-none p-3 text-white"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              placeholder="Password"
+              type="password"
+              className="mb-4 bg-neutral-900 border-none p-3 text-white"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button
+              className="w-full bg-white hover:bg-neutral-500  text-black py-3 rounded-lg"
+              onClick={handleLogin}
+              disabled={loginLoading}
+            >
+              {loginLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                "Sign In"
+              )}
+            </Button>
+          </TabsContent>
+
+          {/* Signup Form */}
+          <TabsContent value="signup">
+            <Input
+              placeholder="Email"
+              type="email"
+              className="mb-4 bg-neutral-900 border-none p-3 text-white"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              placeholder="Password"
+              type="password"
+              className="mb-4 bg-neutral-900 border-none p-3 text-white"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Input
+              placeholder="Confirm Password"
+              type="password"
+              className="mb-4 bg-neutral-900 border-none p-3 text-white"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <Button
+              className="w-full bg-white hover:bg-neutral-500 text-black py-3 rounded-lg"
+              onClick={handleSignup}
+              disabled={signupLoading}
+            >
+              {signupLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                "Create Account"
+              )}
+            </Button>
+          </TabsContent>
+        </Tabs>
+
+        <div className="mt-6 text-center text-gray-400 text-sm">
+          OR CONTINUE WITH
         </div>
-        <div className="hidden xl:flex justify-center px-3 items-center">
-          <img src={Background} alt="background-login" />
+
+        <div className="flex justify-center gap-4 mt-4">
+          <Button
+            className="bg-neutral-900 text-white py-3 w-1/2"
+            onClick={() => {
+              toast.error("Feature not available yet");
+            }}
+          >
+            Google
+          </Button>
+          <Button
+            className="bg-neutral-900 text-white py-3 w-1/2"
+            onClick={() => {
+              toast.error("Feature not available yet");
+            }}
+          >
+            GitHub
+          </Button>
         </div>
       </div>
     </div>
