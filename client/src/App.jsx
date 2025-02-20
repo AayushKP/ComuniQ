@@ -62,7 +62,7 @@ const App = () => {
           className="mb-4"
         />
         <p className="text-white font-mono text-lg animate-pulse">
-          Server setting up...
+          Server Buffering
         </p>
       </div>
     );
