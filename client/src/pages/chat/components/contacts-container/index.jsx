@@ -17,6 +17,7 @@ function ContactsContainer() {
     channels,
     setChannels,
   } = useAppStore();
+
   useEffect(() => {
     const getContacts = async () => {
       const response = await apiClient.get(GET_DM_CONTACTS_ROUTES, {
@@ -46,7 +47,8 @@ function ContactsContainer() {
           <Title text="Direct Messages" />
           <NewDM />
         </div>
-        <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
+        {/* Fixed height container for Direct Messages */}
+        <div className="h-[38vh] overflow-y-auto auto-hide-scrollbar">
           <ContactList contacts={directMessagesContacts} />
         </div>
       </div>
@@ -55,7 +57,8 @@ function ContactsContainer() {
           <Title text="Channels" />
           <CreateChannel />
         </div>
-        <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
+        {/* Fixed height container for Channels */}
+        <div className="h-[34vh] pb-16 overflow-y-auto auto-hide-scrollbar">
           <ContactList contacts={channels} isChannel={true} />
         </div>
       </div>
@@ -89,7 +92,6 @@ const Logo = () => {
           fill="#912a2a"
         ></path>
       </svg>
-
       <span className="text-4xl md:text-3xl font-bold font-poppins text-[#bdb220]">
         Com<span className="text-[#912a2a]">u</span>niQ
       </span>
@@ -99,7 +101,7 @@ const Logo = () => {
 
 const Title = ({ text }) => {
   return (
-    <h6 className="uppercase tracking-videst text-neutral-400 pl-10 font-light text-opacity-90 text-sm ">
+    <h6 className="uppercase tracking-videst text-neutral-400 pl-10 font-light text-opacity-90 text-sm">
       {text}
     </h6>
   );

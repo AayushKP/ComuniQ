@@ -69,3 +69,21 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.auto-hide-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+.auto-hide-scrollbar:hover::-webkit-scrollbar {
+  opacity: 1;
+}
+
+/* For Firefox */
+.auto-hide-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.auto-hide-scrollbar:hover {
+  scrollbar-color: rgba(198, 196, 196, 0.5) transparent;
+}
