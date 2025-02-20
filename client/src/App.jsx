@@ -54,8 +54,7 @@ const App = () => {
 
   if (loading) {
     return (
-      <div>
-        {" "}
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-800 to-black">
         <ClipLoader
           color="#ffffff"
           size={50}
