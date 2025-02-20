@@ -143,7 +143,7 @@ function index() {
       <div className="bg-gradient-to-r from-gray-900 to-black md:p-10 rounded-xl flex flex-col gap-10 w-[80vw] md:w-max">
         <IoArrowBack
           onClick={handleNavigate}
-          className="text-4xl lg:text-6xl text-white/90 cursor-pointer"
+          className="text-4xl lg:text-3xl text-white/90 cursor-pointer"
         />
         <div className="grid grid-cols-2">
           <div
