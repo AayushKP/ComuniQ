@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import ContactsContainer from "./components/contacts-container";
 import EmptyChatContainer from "./components/empty-chat-container";
 import ChatContainer from "./components/chat-container";
-import Loader from "./components/ui/Loader";
+import Loader from "@/components/ui/Loader";
 import { useAppStore } from "@/store/slices";
 
 function Chat() {
