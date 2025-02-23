@@ -28,8 +28,8 @@ function Chat() {
 
     const loadComponents = async () => {
       await Promise.all([
-        new Promise((res) => setTimeout(res, 1000)), 
-        new Promise((res) => setTimeout(res, 1000)), 
+        new Promise((res) => setTimeout(res, 2500)),
+        new Promise((res) => setTimeout(res, 2500)),
       ]);
       setIsLoaded(true);
     };
