@@ -4,8 +4,6 @@ import apiClient from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constants";
 import { useAppStore } from "./store/slices";
 import Loader from "./components/ui/Loader";
-
-// Direct imports (lazy loading removed)
 import Auth from "./pages/auth";
 import Chat from "./pages/chat";
 import Profile from "./pages/profile";
