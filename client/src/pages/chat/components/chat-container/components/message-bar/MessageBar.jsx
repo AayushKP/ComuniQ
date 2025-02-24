@@ -130,6 +130,11 @@ function MessageBar() {
           placeholder="Enter Message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && message.trim() !== "") {
+              handleSendMessage();
+            }
+          }}
         />
         <button
           className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
@@ -162,8 +167,13 @@ function MessageBar() {
         </div>
       </div>
       <button
-        className="bg-[#FFCC43] flex items-center justify-center p-5 gap-2 focus:border-none rounded-xl hover:bg-[#a79b1d] focus:bg-[#a79c1d7d]"
-        onClick={handleSendMessage}
+        onClick={() => {
+          if (message.trim() !== "") {
+            handleSendMessage();
+          }
+        }}
+        className="bg-yellow-400 flex items-center justify-center p-5 gap-2 rounded-xl hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400"
+        aria-label="Send Message"
       >
         <IoSend className="text-2xl text-white" />
       </button>
