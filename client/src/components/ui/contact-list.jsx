@@ -1,34 +1,42 @@
+import React from "react";
 import { useAppStore } from "@/store/slices";
 import { Avatar, AvatarImage } from "./avatar";
-import { HOST } from "@/utils/constants";
 import { getColor } from "@/lib/utils";
+import { useCallback } from "react";
 
-function ContactList({ contacts, isChannel = false }) {
+const ContactList = ({ contacts, isChannel = false }) => {
   const {
     selectedChatData,
-    selectedChatType,
     setSelectedChatType,
     setSelectedChatData,
     setSelectedChatMessages,
   } = useAppStore();
 
-  const handleClick = (contact) => {
-    if (isChannel) setSelectedChatType("channel");
-    else setSelectedChatType("contact");
-    setSelectedChatData(contact);
-    if (selectedChatData && selectedChatData._id !== contact._id) {
+  const handleClick = useCallback(
+    (contact) => {
+      if (selectedChatData?._id === contact._id) return;
+
+      setSelectedChatType(isChannel ? "channel" : "contact");
+      setSelectedChatData(contact);
       setSelectedChatMessages([]);
-    }
-  };
+    },
+    [
+      selectedChatData,
+      setSelectedChatType,
+      setSelectedChatData,
+      setSelectedChatMessages,
+      isChannel,
+    ]
+  );
 
   return (
-    <div className="mt-5 ">
+    <div className="mt-5">
       {contacts.map((contact) => (
         <div
           key={contact._id}
-          className={`pl-10 py-2 transition-all duration-300 cursor-pointer ${
-            selectedChatData && selectedChatData._id === contact._id
-              ? " bg-[#b6aa2489] hover:bg-[#b5ab19d0]"
+          className={`pl-10 py-2 cursor-pointer ${
+            selectedChatData?._id === contact._id
+              ? "bg-[#b6aa2489] hover:bg-[#b5ab19d0]"
               : "hover:bg-gray-800"
           }`}
           onClick={() => handleClick(contact)}
@@ -44,19 +52,13 @@ function ContactList({ contacts, isChannel = false }) {
                   />
                 ) : (
                   <div
-                    className={`
-                    ${
-                      selectedChatData && selectedChatData._id === contact._id
-                        ? ""
-                        : ""
-                    }
-                    uppercase h-10 w-10 text-lg border-[1px] flex items-center justify-center rounded-full ${getColor(
+                    className={`uppercase h-10 w-10 text-lg border-[1px] flex items-center justify-center rounded-full ${getColor(
                       contact.color
                     )}`}
                   >
                     {contact.firstName
-                      ? contact.firstName.split("").shift()
-                      : contact.email.split("").shift()}
+                      ? contact.firstName[0]
+                      : contact.email[0]}
                   </div>
                 )}
               </Avatar>
@@ -66,15 +68,16 @@ function ContactList({ contacts, isChannel = false }) {
                 %
               </div>
             )}
-            {isChannel ? (
-              <span>{contact.name}</span>
-            ) : (
-              <span>{`${contact.firstName} ${contact.lastName}`}</span>
-            )}
+            <span>
+              {isChannel
+                ? contact.name
+                : `${contact.firstName} ${contact.lastName}`}
+            </span>
           </div>
         </div>
       ))}
     </div>
   );
-}
-export default ContactList;
+};
+
+export default React.memo(ContactList);
