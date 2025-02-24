@@ -92,6 +92,7 @@ function MessageContainer() {
       setFileDownloadProgress(0);
       try {
         const response = await apiClient.get(url, {
+          withCredentials: true,
           responseType: "blob",
           onDownloadProgress: (progressEvent) => {
             const { loaded, total } = progressEvent;
