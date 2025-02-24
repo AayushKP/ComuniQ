@@ -28,65 +28,64 @@ function MessageContainer() {
   const [showImage, setShowImage] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
-  // Fetch messages for contacts
-  const fetchContactMessages = useCallback(async () => {
+  // Cache messages to reduce latency for revisited chats.
+  // The cache key is a combination of chat type and chat ID.
+  const messagesCache = useRef({});
+
+  // Fetch messages with caching
+  const fetchMessages = useCallback(async () => {
+    if (!selectedChatData?._id) return;
+    const cacheKey = `${selectedChatType}_${selectedChatData._id}`;
+    // If messages are already cached, use them.
+    if (messagesCache.current[cacheKey]) {
+      setSelectedChatMessages(messagesCache.current[cacheKey]);
+      return;
+    }
     try {
-      const response = await apiClient.post(
-        GET_ALL_MESSAGES_ROUTE,
-        { id: selectedChatData._id },
-        { withCredentials: true }
-      );
-      if (response.data.messages) {
+      let response;
+      if (selectedChatType === "contact") {
+        response = await apiClient.post(
+          GET_ALL_MESSAGES_ROUTE,
+          { id: selectedChatData._id },
+          { withCredentials: true }
+        );
+      } else if (selectedChatType === "channel") {
+        response = await apiClient.get(
+          `${GET_CHANNEL_MESSAGES}/${selectedChatData._id}`,
+          { withCredentials: true }
+        );
+      }
+      if (response.data?.messages) {
         setSelectedChatMessages(response.data.messages);
+        messagesCache.current[cacheKey] = response.data.messages;
       }
     } catch (error) {
-      console.error("Error fetching contact messages:", error);
+      console.error("Error fetching messages:", error);
     }
-  }, [selectedChatData, setSelectedChatMessages]);
+  }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
 
-  // Fetch messages for channels
-  const fetchChannelMessages = useCallback(async () => {
-    try {
-      const res = await apiClient.get(
-        `${GET_CHANNEL_MESSAGES}/${selectedChatData._id}`,
-        { withCredentials: true }
-      );
-      if (res.data.messages) {
-        setSelectedChatMessages(res.data.messages);
-      }
-    } catch (error) {
-      console.error("Error fetching channel messages:", error);
-    }
-  }, [selectedChatData, setSelectedChatMessages]);
-
-  // Fetch messages when chat data or type changes
+  // Fetch messages whenever the selected chat changes.
   useEffect(() => {
     if (selectedChatData?._id) {
-      if (selectedChatType === "contact") fetchContactMessages();
-      else if (selectedChatType === "channel") fetchChannelMessages();
+      fetchMessages();
     }
-  }, [
-    selectedChatData,
-    selectedChatType,
-    fetchContactMessages,
-    fetchChannelMessages,
-  ]);
+  }, [selectedChatData, selectedChatType, fetchMessages]);
 
-  // Auto-scroll to the latest message
+  // Auto-scroll to the latest message.
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [selectedChatMessages]);
 
-  // Check if file is an image
+  // Check if a file is an image.
   const checkImage = useCallback((filePath) => {
     const imageRegex =
       /\.(jpg|jpeg|png|gif|bmp|tiff|tif|webp|svg|ico|heic|heif)$/i;
     return imageRegex.test(filePath);
   }, []);
 
-  // Download file logic
+  // Download file logic.
   const downloadFile = useCallback(
     async (url) => {
       setIsDownloading(true);
@@ -118,7 +117,7 @@ function MessageContainer() {
     [setFileDownloadProgress, setIsDownloading]
   );
 
-  // Render direct messages
+  // Render direct messages.
   const renderDMMessages = useCallback(
     (message) => (
       <div
@@ -179,7 +178,7 @@ function MessageContainer() {
     [selectedChatData, checkImage, downloadFile]
   );
 
-  // Render channel messages
+  // Render channel messages.
   const renderChannelMessages = useCallback(
     (message) => (
       <div
@@ -269,7 +268,7 @@ function MessageContainer() {
     [userInfo, checkImage, downloadFile]
   );
 
-  // Memoize messages for performance
+  // Memoize messages for performance and add date separators.
   const renderedMessages = useMemo(() => {
     let lastDate = null;
     return selectedChatMessages.map((message) => {
