@@ -58,7 +58,7 @@ export default function Home() {
         transition={{ delay: 1, duration: 0.8 }}
         className="mt-20 text-center text-gray-400"
       >
-        <p>© 2025 Comuniq. All rights reserved.</p>
+        <p>© 2025 ComuniQ. All rights reserved.</p>
       </motion.div>
     </div>
   );
