@@ -7,6 +7,7 @@ import Loader from "./components/ui/Loader";
 import Auth from "./pages/auth";
 import Chat from "./pages/chat";
 import Profile from "./pages/profile";
+import Home from "./pages/home/Home";
 
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
@@ -60,6 +61,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route
           path="/auth"
           element={
