@@ -11,7 +11,7 @@ import Home from "./pages/home/Home";
 
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
-  return userInfo ? children : <Navigate to="/auth" />;
+  return userInfo ? children : <Navigate to="/" />;
 };
 
 const AuthRoute = ({ children }) => {
@@ -61,7 +61,14 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <AuthRoute>
+              <Home />
+            </AuthRoute>
+          }
+        />
         <Route
           path="/auth"
           element={

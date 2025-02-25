@@ -76,7 +76,7 @@ function ProfileInfoComponent() {
                 className="text-[#bdb220]"
               />
             </TooltipTrigger>
-            <TooltipContent className="bg-[#1c1b1e] border-none text white">
+            <TooltipContent className="bg-[#1c1b1e] border-none text-white">
               Edit Profile
             </TooltipContent>
           </Tooltip>
@@ -86,7 +86,7 @@ function ProfileInfoComponent() {
             <TooltipTrigger>
               <IoPowerSharp onClick={logout} className="text-red-700" />
             </TooltipTrigger>
-            <TooltipContent className="bg-[#1c1b1e] border-none text white">
+            <TooltipContent className="bg-[#1c1b1e] border-none text-white">
               Logout
             </TooltipContent>
           </Tooltip>
