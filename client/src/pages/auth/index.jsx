@@ -99,10 +99,12 @@ function Auth() {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center font-poppins">
-      <div className="w-full max-w-md md:max-w-lg min-h-[500px] p-10 bg-neutral-950 text-white rounded-2xl shadow-md">
-        <h2 className="text-center text-2xl font-semibold">ComuniQ</h2>
-        <p className="text-center text-gray-400 mt-1 mb-6 text-sm">
+    <div className="h-screen flex items-center justify-center font-poppins bg-gradient-to-br from-gray-800 to-black">
+      <div className="w-full max-w-md md:max-w-lg min-h-[500px] p-10 bg-gray-800/70 backdrop-blur-md text-white rounded-2xl shadow-lg border border-gray-700">
+        <h2 className="text-center text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-yellow-400">
+          Welcome to ComuniQ
+        </h2>
+        <p className="text-center text-gray-400 mt-1 mb-6 text-xs">
           Enter your credentials to continue
         </p>
 
@@ -110,13 +112,13 @@ function Auth() {
           <TabsList className="flex justify-between bg-transparent mb-4">
             <TabsTrigger
               value="login"
-              className="w-1/2 text-center data-[state=active]:text-white data-[state=active]:bg-black data-[state=active]:rounded-lg border-b rounded-none bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-amber-400"
+              className="w-1/2 text-center data-[state=active]:text-white data-[state=active]:bg-gray-700 data-[state=active]:rounded-lg border-b rounded-none bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-yellow-400"
             >
               Login
             </TabsTrigger>
             <TabsTrigger
               value="signup"
-              className="w-1/2 text-center data-[state=active]:text-white data-[state=active]:bg-black data-[state=active]:rounded-lg border-b rounded-none bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-amber-400"
+              className="w-1/2 text-center data-[state=active]:text-white data-[state=active]:bg-gray-700 data-[state=active]:rounded-lg border-b rounded-none bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-orange-400"
             >
               Signup
             </TabsTrigger>
@@ -127,19 +129,19 @@ function Auth() {
             <Input
               placeholder="Email"
               type="email"
-              className="mb-4 bg-neutral-900 border-none p-3 text-white"
+              className="mb-4 bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               placeholder="Password"
               type="password"
-              className="mb-4 bg-neutral-900 border-none p-3 text-white"
+              className="mb-4 bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button
-              className="w-full bg-white hover:bg-neutral-500 text-black py-3 rounded-lg"
+              className="w-full bg-gradient-to-r  from-red-500 to-yellow-500 hover:to-yellow-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
               onClick={handleLogin}
               disabled={loginLoading}
             >
@@ -156,26 +158,26 @@ function Auth() {
             <Input
               placeholder="Email"
               type="email"
-              className="mb-4 bg-neutral-900 border-none p-3 text-white"
+              className="mb-4 bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               placeholder="Password"
               type="password"
-              className="mb-4 bg-neutral-900 border-none p-3 text-white"
+              className="mb-4 bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <Input
               placeholder="Confirm Password"
               type="password"
-              className="mb-4 bg-neutral-900 border-none p-3 text-white"
+              className="mb-4 bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <Button
-              className="w-full bg-white hover:bg-neutral-500 text-black py-3 rounded-lg"
+              className="w-full bg-gradient-to-r from-red-500 to-yellow-500 hover:to-yellow-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
               onClick={handleSignup}
               disabled={signupLoading}
             >
@@ -194,7 +196,7 @@ function Auth() {
 
         <div className="flex justify-center gap-4 mt-4">
           <Button
-            className="bg-neutral-900 text-white py-3 w-1/2"
+            className="w-1/2 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
             onClick={() => {
               toast.error("Feature not available yet");
             }}
@@ -202,7 +204,7 @@ function Auth() {
             Google
           </Button>
           <Button
-            className="bg-neutral-900 text-white py-3 w-1/2"
+            className="w-1/2 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
             onClick={() => {
               toast.error("Feature not available yet");
             }}
