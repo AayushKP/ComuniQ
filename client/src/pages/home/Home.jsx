@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function Home() {
   const navigate = useNavigate();
   return (
-    <div className="bg-gradient-to-br from-gray-800 to-blue-950 text-white min-h-screen flex flex-col items-center justify-center p-8">
+    <div className="bg-gradient-to-br from-gray-700 to-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-8">
       <div className="flex flex-col md:flex-row items-center justify-center md:justify-evenly w-full max-w-6xl">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
