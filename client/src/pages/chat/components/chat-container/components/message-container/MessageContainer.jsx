@@ -76,48 +76,197 @@ function MessageContainer() {
     }
   }, [selectedChatMessages]);
 
-  // Add a new message to the local state and cache
-  const addNewMessage = useCallback(
-    (newMessage) => {
-      const cacheKey = `${selectedChatType}_${selectedChatData._id}`;
-      const updatedMessages = [...selectedChatMessages, newMessage];
-      setSelectedChatMessages(updatedMessages);
-      messagesCache.current[cacheKey] = updatedMessages;
-    },
-    [
-      selectedChatMessages,
-      selectedChatData,
-      selectedChatType,
-      setSelectedChatMessages,
-    ]
-  );
+  // Check if a file is an image.
+  const checkImage = useCallback((filePath) => {
+    const imageRegex =
+      /\.(jpg|jpeg|png|gif|bmp|tiff|tif|webp|svg|ico|heic|heif)$/i;
+    return imageRegex.test(filePath);
+  }, []);
 
-  // Example function to send a message (you can call this from your message input component)
-  const sendMessage = useCallback(
-    async (messageContent) => {
+  // Download file logic.
+  const downloadFile = useCallback(
+    async (url) => {
+      setIsDownloading(true);
+      setFileDownloadProgress(0);
       try {
-        const response = await apiClient.post(
-          "/send-message", // Replace with your send message endpoint
-          {
-            chatId: selectedChatData._id,
-            content: messageContent,
-            messageType: "text", // or "file" if applicable
+        const response = await apiClient.get(url, {
+          responseType: "blob",
+          onDownloadProgress: (progressEvent) => {
+            const { loaded, total } = progressEvent;
+            const percentCompleted = Math.round((100 * loaded) / total);
+            setFileDownloadProgress(percentCompleted);
           },
-          { withCredentials: true }
-        );
-
-        if (response.data?.message) {
-          // Add the new message to the local state
-          addNewMessage(response.data.message);
-        }
+        });
+        const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = urlBlob;
+        link.setAttribute("download", url.split("/").pop());
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(urlBlob);
       } catch (error) {
-        console.error("Error sending message:", error);
+        console.error("Download error:", error);
+      } finally {
+        setIsDownloading(false);
+        setFileDownloadProgress(0);
       }
     },
-    [selectedChatData, addNewMessage]
+    [setFileDownloadProgress, setIsDownloading]
   );
 
-  // Render messages
+  // Render direct messages.
+  const renderDMMessages = useCallback(
+    (message) => (
+      <div
+        className={
+          message.sender === selectedChatData._id ? "text-left" : "text-right"
+        }
+      >
+        {message.messageType === "text" && (
+          <div
+            className={`border inline-block p-4 rounded-2xl my-1 max-w-[50%] break-words ${
+              message.sender !== selectedChatData._id
+                ? "bg-[#328aa9]/5 text-white border-[#bdcd46]/50"
+                : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
+            }`}
+          >
+            {message.content}
+          </div>
+        )}
+        {message.messageType === "file" && (
+          <div
+            className={`border inline-block p-4 rounded-2xl my-1 max-w-[50%] break-words ${
+              message.sender !== selectedChatData._id
+                ? "bg-[#328aa9]/5 text-white border-[#bdcd46]/50"
+                : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
+            }`}
+          >
+            {checkImage(message.fileUrl) ? (
+              <div
+                className="cursor-pointer"
+                onClick={() => {
+                  setShowImage(true);
+                  setImageUrl(message.fileUrl);
+                }}
+              >
+                <img src={message.fileUrl} height={300} width={300} alt="" />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-4">
+                <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3">
+                  <MdFolderZip />
+                </span>
+                <span>{message.fileUrl.split("/").pop()}</span>
+                <span
+                  className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
+                  onClick={() => downloadFile(message.fileUrl)}
+                >
+                  <IoMdArrowRoundDown />
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+        <div className="text-xs text-gray-600">
+          {moment(message.timestamp).format("LT")}
+        </div>
+      </div>
+    ),
+    [selectedChatData, checkImage, downloadFile]
+  );
+
+  // Render channel messages.
+  const renderChannelMessages = useCallback(
+    (message) => (
+      <div
+        className={`mt-5 ${
+          message.sender._id !== userInfo.id ? "text-left" : "text-right"
+        }`}
+      >
+        {message.messageType === "text" && (
+          <div
+            className={`border inline-block p-4 rounded-2xl my-1 max-w-[50%] break-words ml-9 ${
+              message.sender._id === userInfo.id
+                ? "bg-[#328aa9]/5 text-[#c6c451]/90 border-[#bdcd46]/50"
+                : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
+            }`}
+          >
+            {message.content}
+          </div>
+        )}
+        {message.messageType === "file" && (
+          <div
+            className={`border inline-block p-4 rounded-2xl my-1 max-w-[50%] break-words ${
+              message.sender._id === userInfo._id
+                ? "bg-[#328aa9]/5 text-[#c6c451]/90 border-[#bdcd46]/50"
+                : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
+            }`}
+          >
+            {checkImage(message.fileUrl) ? (
+              <div
+                className="cursor-pointer"
+                onClick={() => {
+                  setShowImage(true);
+                  setImageUrl(message.fileUrl);
+                }}
+              >
+                <img src={message.fileUrl} height={300} width={300} alt="" />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-4">
+                <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3">
+                  <MdFolderZip />
+                </span>
+                <span>{message.fileUrl.split("/").pop()}</span>
+                <span
+                  className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
+                  onClick={() => downloadFile(message.fileUrl)}
+                >
+                  <IoMdArrowRoundDown />
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+        {message.sender._id !== userInfo.id ? (
+          <div className="flex items-center justify-start gap-3">
+            <Avatar className="h-8 w-8 rounded-full overflow-hidden">
+              {message.sender.image && (
+                <AvatarImage
+                  src={message.sender.image}
+                  alt="profile"
+                  className="object-cover w-full h-full bg-black"
+                />
+              )}
+              <AvatarFallback
+                className={`uppercase h-8 w-8 text-lg flex items-center justify-center rounded-full ${getColor(
+                  message.sender.color
+                )}`}
+              >
+                {message.sender.firstName
+                  ? message.sender.firstName[0]
+                  : message.sender.email[0]}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-sm text-white/60">
+              {`${message.sender.firstName} ${message.sender.lastName}`}
+            </span>
+            <span className="text-xs text-white/60">
+              {moment(message.timestamp).format("LT")}
+            </span>
+          </div>
+        ) : (
+          <div className="text-xs text-white/60 mt-1">
+            {moment(message.timestamp).format("LT")}
+          </div>
+        )}
+      </div>
+    ),
+    [userInfo, checkImage, downloadFile]
+  );
+
+  // Memoize messages for performance and add date separators.
   const renderedMessages = useMemo(() => {
     let lastDate = null;
     return selectedChatMessages.map((message) => {
