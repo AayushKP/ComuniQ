@@ -38,34 +38,44 @@ function ContactsContainer() {
   }, [setChannels, setDirectMessagesContacts]);
 
   return (
-    <div className="relative md:w-[30vw] bg-gradient-to-b from-gray-800 to-gray-950 lg:w-[25vw] xl:w-[20vw] border-r-2 border-[#2f303b] w-full">
+    <div className="relative md:w-[30vw] bg-gradient-to-b from-gray-800 to-gray-950 lg:w-[25vw] xl:w-[20vw] border-r-2 border-[#2f303b] w-full flex flex-col h-screen">
+      {/* Logo Section */}
       <div className="pt-3">
         <Logo />
       </div>
-      <div className="my-5">
+
+      {/* Direct Messages Section */}
+      <div className="my-5 flex-1 overflow-y-auto">
         <div className="flex items-center justify-between pr-10">
           <Title text="Direct Messages" />
           <NewDM />
         </div>
         {/* Fixed height container for Direct Messages */}
-        <div className="max-h-[34vh] overflow-y-auto auto-hide-scrollbar">
+        <div className="max-h-[31vh] overflow-y-auto auto-hide-scrollbar">
           <ContactList contacts={directMessagesContacts} />
         </div>
       </div>
-      <div className="my-5">
+
+      {/* Channels Section */}
+      <div className="my-5 flex-1 overflow-y-auto">
         <div className="flex items-center justify-between pr-10">
           <Title text="Channels" />
           <CreateChannel />
         </div>
         {/* Fixed height container for Channels */}
-        <div className="max-h-[31vh]  overflow-y-auto auto-hide-scrollbar">
+        <div className="max-h-[31vh] overflow-y-auto auto-hide-scrollbar">
           <ContactList contacts={channels} isChannel={true} />
         </div>
       </div>
-      <ProfileInfoComponent />
+
+      {/* Profile Info Section */}
+      <div className="mt-auto">
+        <ProfileInfoComponent />
+      </div>
     </div>
   );
 }
+
 export default ContactsContainer;
 
 const Logo = () => {
