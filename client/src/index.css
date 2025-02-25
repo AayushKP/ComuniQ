@@ -87,3 +87,12 @@
 .auto-hide-scrollbar:hover {
   scrollbar-color: rgba(198, 196, 196, 0.5) transparent;
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

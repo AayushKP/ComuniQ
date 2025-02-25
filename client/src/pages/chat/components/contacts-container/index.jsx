@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NewDM from "./components/new-dm";
 import ProfileInfoComponent from "./components/profile-info";
 import apiClient from "@/lib/api-client";
@@ -9,6 +9,7 @@ import {
 import ContactList from "@/components/ui/contact-list";
 import { useAppStore } from "@/store/slices";
 import CreateChannel from "./components/create-channel";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 function ContactsContainer() {
   const {
@@ -18,6 +19,11 @@ function ContactsContainer() {
     setChannels,
   } = useAppStore();
 
+  // State for dropdowns
+  const [isDMDropdownOpen, setIsDMDropdownOpen] = useState(false);
+  const [isChannelDropdownOpen, setIsChannelDropdownOpen] = useState(false);
+
+  // Fetch contacts and channels
   useEffect(() => {
     const getContacts = async () => {
       const response = await apiClient.get(GET_DM_CONTACTS_ROUTES, {
@@ -37,6 +43,16 @@ function ContactsContainer() {
     getChannels();
   }, [setChannels, setDirectMessagesContacts]);
 
+  const toggleDMDropdown = () => {
+    setIsDMDropdownOpen(!isDMDropdownOpen);
+    if (isChannelDropdownOpen) setIsChannelDropdownOpen(false);
+  };
+
+  const toggleChannelDropdown = () => {
+    setIsChannelDropdownOpen(!isChannelDropdownOpen);
+    if (isDMDropdownOpen) setIsDMDropdownOpen(false);
+  };
+
   return (
     <div className="relative md:w-[30vw] bg-gradient-to-b from-gray-800 to-gray-950 lg:w-[25vw] xl:w-[20vw] border-r-2 border-[#2f303b] w-full flex flex-col h-screen">
       {/* Logo Section */}
@@ -45,27 +61,49 @@ function ContactsContainer() {
       </div>
 
       {/* Direct Messages Section */}
-      <div className="my-5 flex-1 overflow-y-auto">
-        <div className="flex items-center justify-between pr-10">
-          <Title text="Direct Messages" />
+      <div className="flex flex-col">
+        <div
+          className="flex items-center justify-between px-5 py-2 cursor-pointer"
+          onClick={toggleDMDropdown}
+        >
+          <div className="flex items-center gap-2">
+            {isDMDropdownOpen ? (
+              <ChevronUp className="text-neutral-400" />
+            ) : (
+              <ChevronDown className="text-neutral-400" />
+            )}
+            <Title text="Direct Messages" />
+          </div>
           <NewDM />
         </div>
-        {/* Fixed height container for Direct Messages */}
-        <div className="max-h-[31vh] overflow-y-auto auto-hide-scrollbar">
-          <ContactList contacts={directMessagesContacts} />
-        </div>
+        {isDMDropdownOpen && (
+          <div className="overflow-y-auto max-h-96 auto-hide-scrollbar">
+            <ContactList contacts={directMessagesContacts} />
+          </div>
+        )}
       </div>
 
       {/* Channels Section */}
-      <div className="my-5 flex-1 overflow-y-auto">
-        <div className="flex items-center justify-between pr-10">
-          <Title text="Channels" />
+      <div className="flex flex-col">
+        <div
+          className="flex items-center justify-between px-5 py-2 cursor-pointer"
+          onClick={toggleChannelDropdown}
+        >
+          <div className="flex items-center gap-2">
+            {isChannelDropdownOpen ? (
+              <ChevronUp className="text-neutral-400" />
+            ) : (
+              <ChevronDown className="text-neutral-400" />
+            )}
+            <Title text="Channels" />
+          </div>
           <CreateChannel />
         </div>
-        {/* Fixed height container for Channels */}
-        <div className="max-h-[31vh] overflow-y-auto auto-hide-scrollbar">
-          <ContactList contacts={channels} isChannel={true} />
-        </div>
+        {isChannelDropdownOpen && (
+          <div className="overflow-y-auto max-h-96 auto-hide-scrollbar">
+            <ContactList contacts={channels} isChannel={true} />
+          </div>
+        )}
       </div>
 
       {/* Profile Info Section */}
@@ -111,7 +149,7 @@ const Logo = () => {
 
 const Title = ({ text }) => {
   return (
-    <h6 className="uppercase tracking-videst text-neutral-400 pl-10 font-light text-opacity-90 text-sm">
+    <h6 className="uppercase tracking-wide text-neutral-400 font-light text-opacity-90 text-sm">
       {text}
     </h6>
   );
