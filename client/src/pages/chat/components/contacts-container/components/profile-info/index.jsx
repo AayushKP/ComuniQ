@@ -30,7 +30,7 @@ function ProfileInfoComponent() {
       );
       console.log(res);
       if (res.status === 200) {
-        navigate("/auth");
+        navigate("/");
         setUserInfo(null);
       }
     } catch (error) {
