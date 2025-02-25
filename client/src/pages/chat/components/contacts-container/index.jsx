@@ -89,7 +89,7 @@ const Logo = () => {
         ></path>
         <path
           d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"
-          fill="#912a2a"
+          fill="#a6370b"
         ></path>
       </svg>
       <span className="text-4xl md:text-3xl font-bold font-poppins text-[#bdb220]">
