@@ -48,7 +48,7 @@ function ContactsContainer() {
           <NewDM />
         </div>
         {/* Fixed height container for Direct Messages */}
-        <div className="h-[38vh] overflow-y-auto auto-hide-scrollbar">
+        <div className="max-h-[34vh] overflow-y-auto auto-hide-scrollbar">
           <ContactList contacts={directMessagesContacts} />
         </div>
       </div>
@@ -58,7 +58,7 @@ function ContactsContainer() {
           <CreateChannel />
         </div>
         {/* Fixed height container for Channels */}
-        <div className="h-[34vh] pb-16 overflow-y-auto auto-hide-scrollbar">
+        <div className="max-h-[31vh]  overflow-y-auto auto-hide-scrollbar">
           <ContactList contacts={channels} isChannel={true} />
         </div>
       </div>
