@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env  # Backend-specific environment variables
+    restart: unless-stopped  # Restart unless manually stopped
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app  # Mount app code into container
+      - /app/node_modules  # Avoid overwriting node_modules
+    networks:
+      - app_network  # Custom network for service communication
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo_db
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    env_file:
+      - .env.mongo  # Fetch MongoDB credentials from a separate file
+    volumes:
+      - mongo_data:/data/db  # Persistent storage
+    networks:
+      - app_network  # Same network to enable communication
+
+volumes:
+  mongo_data:  # Persistent volume to retain MongoDB data
+
+networks:
+  app_network:  # Custom bridge network for isolated communication
+    driver: bridge
