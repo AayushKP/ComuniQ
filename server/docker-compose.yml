@@ -45,6 +45,18 @@ services:
     networks:
       - app_network
 
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/html
+    depends_on:
+      - nginx
+    entrypoint: /bin/sh -c "trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew --webroot -w /var/www/html; done;"
+    restart: always
+    networks:
+      - app_network
+
 volumes:
   mongo_data:
 
