@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import passport from "passport";
+import "./config/passport.js";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import authRoutes from "./routes/AuthRoutes.js";
@@ -25,6 +27,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(passport.initialize());
 
 app.use("/uploads/profiles", express.static("uploads/profiles"));
 app.use("/uploads/files", express.static("uploads/files"));
