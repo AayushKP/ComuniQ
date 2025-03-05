@@ -29,6 +29,7 @@ app.use(
   })
 );
 
+app.enable("trust proxy");
 app.use(passport.initialize());
 
 app.use("/uploads/profiles", express.static("uploads/profiles"));
