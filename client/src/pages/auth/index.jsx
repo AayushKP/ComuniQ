@@ -198,7 +198,7 @@ function Auth() {
           <Button
             className="w-1/2 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
             onClick={() => {
-              toast.error("Feature not available yet");
+              window.location.href = `${process.env.VITE_SERVER_URL}/api/auth/google`;
             }}
           >
             Google
