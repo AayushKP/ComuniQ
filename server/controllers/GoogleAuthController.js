@@ -5,7 +5,7 @@ export const googleAuthCallback = (req, res) => {
 
   const token = jwt.sign(
     { email: user.email, id: user.id },
-    "your-secret-key",
+    process.env.JWT_KEY,
     { expiresIn: "3d" }
   );
 
