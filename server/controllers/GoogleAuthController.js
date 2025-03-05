@@ -4,9 +4,9 @@ export const googleAuthCallback = (req, res) => {
   const user = req.user;
 
   const token = jwt.sign(
-    { email: user.email, id: user.id },
+    { email: user.email, userId: user.id },
     process.env.JWT_KEY,
-    { expiresIn: "3d" }
+    { expiresIn: 3 * 24 * 60 * 60 * 1000 }
   );
 
   res.cookie("jwt", token, {
