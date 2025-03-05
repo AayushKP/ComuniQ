@@ -15,5 +15,5 @@ export const googleAuthCallback = (req, res) => {
     sameSite: "None",
   });
 
-  res.redirect(process.env.CLIENT_REDIRECT_URL || "http://localhost:5173/chat");
+  res.redirect(process.env.CLIENT_REDIRECT_URL);
 };
