@@ -41,10 +41,16 @@ const userSchema = new mongoose.Schema({
 
 // pre is a middleware to encrypt password
 userSchema.pre("save", async function (next) {
+  // Only hash the password if it's new or modified and exists.
+  if (!this.isModified("password") || !this.password) {
+    return next();
+  }
+
   const salt = await genSalt();
   this.password = await hash(this.password, salt);
   next();
 });
+
 
 const User = mongoose.model("Users", userSchema);
 
