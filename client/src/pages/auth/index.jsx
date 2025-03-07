@@ -101,7 +101,7 @@ function Auth() {
 
   return (
     <div className="h-[100dvh] flex items-center justify-center font-poppins bg-gradient-to-br from-gray-800 to-black">
-      <div className=" max-w-md md:max-w-lg min-h-[500px] p-10 bg-gray-800/70 backdrop-blur-md text-white rounded-2xl shadow-lg border border-gray-700">
+      <div className="sm:w-full max-w-md sm:max-w-lg min-h-[500px] p-10 bg-gray-800/70 backdrop-blur-md text-white rounded-2xl shadow-lg border border-gray-700">
         <h2 className="text-center text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-yellow-400">
           Welcome to ComuniQ
         </h2>
