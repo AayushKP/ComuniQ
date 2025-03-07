@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 
 function Auth() {
   const { setUserInfo } = useAppStore();
@@ -30,7 +31,7 @@ function Auth() {
       return false;
     }
     if (!isValidEmail(email)) {
-      toast.error("Please enter valid email!");
+      toast.error("Please enter a valid email!");
       return false;
     }
     if (password.length < 6) {
@@ -109,7 +110,7 @@ function Auth() {
         </p>
 
         <Tabs defaultValue="login">
-          <TabsList className="flex justify-between bg-transparent mb-4">
+          <TabsList className="flex justify-between bg-transparent mb-6">
             <TabsTrigger
               value="login"
               className="w-1/2 text-center data-[state=active]:text-white data-[state=active]:bg-gray-700 data-[state=active]:rounded-lg border-b rounded-none bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-yellow-400"
@@ -126,67 +127,71 @@ function Auth() {
 
           {/* Login Form */}
           <TabsContent value="login">
-            <Input
-              placeholder="Email"
-              type="email"
-              className="mb-4 bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              placeholder="Password"
-              type="password"
-              className="mb-4 bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button
-              className="w-full bg-gradient-to-r  from-red-500 to-yellow-500 hover:to-yellow-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
-              onClick={handleLogin}
-              disabled={loginLoading}
-            >
-              {loginLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                "Sign In"
-              )}
-            </Button>
+            <div className="space-y-4">
+              <Input
+                placeholder="Email"
+                type="email"
+                className="bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Input
+                placeholder="Password"
+                type="password"
+                className="bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Button
+                className="w-full bg-gradient-to-r from-red-500 to-yellow-500 hover:to-yellow-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+                onClick={handleLogin}
+                disabled={loginLoading}
+              >
+                {loginLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  "Sign In"
+                )}
+              </Button>
+            </div>
           </TabsContent>
 
           {/* Signup Form */}
           <TabsContent value="signup">
-            <Input
-              placeholder="Email"
-              type="email"
-              className="mb-4 bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              placeholder="Password"
-              type="password"
-              className="mb-4 bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Input
-              placeholder="Confirm Password"
-              type="password"
-              className="mb-4 bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <Button
-              className="w-full bg-gradient-to-r from-red-500 to-yellow-500 hover:to-yellow-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
-              onClick={handleSignup}
-              disabled={signupLoading}
-            >
-              {signupLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                "Create Account"
-              )}
-            </Button>
+            <div className="space-y-4">
+              <Input
+                placeholder="Email"
+                type="email"
+                className="bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Input
+                placeholder="Password"
+                type="password"
+                className="bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Input
+                placeholder="Confirm Password"
+                type="password"
+                className="bg-gray-700 border-none p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <Button
+                className="w-full bg-gradient-to-r from-red-500 to-yellow-500 hover:to-yellow-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+                onClick={handleSignup}
+                disabled={signupLoading}
+              >
+                {signupLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  "Create Account"
+                )}
+              </Button>
+            </div>
           </TabsContent>
         </Tabs>
 
@@ -194,24 +199,17 @@ function Auth() {
           OR CONTINUE WITH
         </div>
 
-        <div className="flex justify-center gap-4 mt-4">
+        <div className="flex justify-center mt-4">
           <Button
-            className="w-1/2 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+            className="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
             onClick={() => {
               window.location.href = `${
                 import.meta.env.VITE_SERVER_URL
               }/api/auth/google`;
             }}
           >
-            Google
-          </Button>
-          <Button
-            className="w-1/2 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
-            onClick={() => {
-              toast.error("Feature not available yet");
-            }}
-          >
-            GitHub
+            <FcGoogle className="w-5 h-5" />
+            <span>Google</span>
           </Button>
         </div>
       </div>
