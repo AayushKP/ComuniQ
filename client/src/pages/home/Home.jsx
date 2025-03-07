@@ -29,10 +29,11 @@ export default function Home() {
             transition={{ delay: 0.5, duration: 0.8 }}
             className="mt-8"
           >
-            <Button className="px-8 py-4 text-lg bg-yellow-600 hover:bg-yellow-700 rounded-xl transition-all duration-300 transform hover:scale-105">
-              <div className="w-full" onClick={() => navigate("/auth")}>
-                Get Started
-              </div>
+            <Button
+              className="px-8 py-4 text-lg bg-yellow-600 hover:bg-yellow-700 rounded-xl transition-all duration-300 transform hover:scale-105"
+              onClick={() => navigate("/auth")}
+            >
+              <div className="w-full">Get Started</div>
             </Button>
           </motion.div>
         </motion.div>
