@@ -122,11 +122,11 @@ function MessageBar() {
   };
 
   return (
-    <div className="h-[10vh] flex justify-center items-center px-8 mb-6 gap-6">
-      <div className="flex-1 flex bg-gray-900 rounded-md items-center gap-5 pr-5">
+    <div className="h-[10vh] flex justify-center items-center px-2 mb-2 gap-2 sm:px-8 sm:mb-6 sm:gap-6">
+      <div className="flex-1 flex bg-gray-900 rounded-md items-center gap-2 pr-2 sm:gap-5 sm:pr-5">
         <input
           type="text"
-          className="flex-1 p-5 bg-transparent rounded-md focus:border-none focus:outline-none"
+          className="flex-1 p-3 sm:p-5 bg-transparent rounded-md focus:border-none focus:outline-none"
           placeholder="Enter Message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -140,7 +140,7 @@ function MessageBar() {
           className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
           onClick={handleAttachmentClick}
         >
-          <GrAttachment className="text-2xl" />
+          <GrAttachment className="text-lg sm:text-2xl" />
         </button>
         <input
           type="file"
@@ -153,7 +153,7 @@ function MessageBar() {
             className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
             onClick={() => setEmojiPickerOpen(!emojiPickerOpen)}
           >
-            <RiEmojiStickerLine className="text-2xl" />
+            <RiEmojiStickerLine className="text-lg sm:text-2xl" />
           </button>
           {emojiPickerOpen && (
             <div className="absolute bottom-16 right-0" ref={emojiRef}>
@@ -172,10 +172,10 @@ function MessageBar() {
             handleSendMessage();
           }
         }}
-        className="bg-yellow-400 flex items-center justify-center p-5 gap-2 rounded-xl hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400"
+        className="bg-yellow-400 flex items-center justify-center p-3 sm:p-5 gap-2 rounded-xl hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400"
         aria-label="Send Message"
       >
-        <IoSend className="text-2xl text-white" />
+        <IoSend className="text-xl sm:text-2xl text-white" />
       </button>
     </div>
   );
