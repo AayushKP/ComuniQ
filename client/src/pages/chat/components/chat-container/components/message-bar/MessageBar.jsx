@@ -122,8 +122,8 @@ function MessageBar() {
   };
 
   return (
-    <div className="h-[10vh] flex justify-center items-center px-2 mb-2 gap-2 sm:px-8 sm:mb-6 sm:gap-6">
-      <div className="flex-1 flex bg-gray-900 rounded-md items-center gap-2 pr-2 sm:gap-5 sm:pr-5">
+    <div className="h-[10vh] flex justify-center items-center px-2 mb-2 gap-2 sm:px-8 sm:mb-6 sm:gap-6 relative">
+      <div className="flex-1 flex bg-gray-900 rounded-md items-center gap-2 pr-2 sm:gap-5 sm:pr-5 ">
         <input
           type="text"
           className="flex-1 p-3 sm:p-5 bg-transparent rounded-md focus:border-none focus:outline-none"
@@ -148,7 +148,7 @@ function MessageBar() {
           ref={fileInputRef}
           onChange={handleAttachmentChange}
         />
-        <div className="relative">
+        <div className="">
           <button
             className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
             onClick={() => setEmojiPickerOpen(!emojiPickerOpen)}
@@ -156,7 +156,10 @@ function MessageBar() {
             <RiEmojiStickerLine className="text-lg sm:text-2xl" />
           </button>
           {emojiPickerOpen && (
-            <div className="absolute bottom-16 right-0" ref={emojiRef}>
+            <div
+              className="absolute bottom-20 right-2 sm:right-24 "
+              ref={emojiRef}
+            >
               <EmojiPicker
                 theme="dark"
                 onEmojiClick={handleAddEmoji}
