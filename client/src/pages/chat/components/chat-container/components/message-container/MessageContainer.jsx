@@ -62,6 +62,18 @@ function MessageContainer() {
     }
   }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
 
+  // Update cache automatically when selectedChatMessages changes.
+  useEffect(() => {
+    if (
+      selectedChatData?._id &&
+      selectedChatMessages &&
+      selectedChatMessages.length > 0
+    ) {
+      const cacheKey = `${selectedChatType}_${selectedChatData._id}`;
+      messagesCache.current[cacheKey] = selectedChatMessages;
+    }
+  }, [selectedChatMessages, selectedChatData, selectedChatType]);
+
   // Fetch messages whenever the selected chat changes.
   useEffect(() => {
     if (selectedChatData?._id) {
