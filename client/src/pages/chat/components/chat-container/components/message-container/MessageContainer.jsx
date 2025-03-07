@@ -143,7 +143,7 @@ function MessageContainer() {
                 : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
             }`}
           >
-            {message.content}
+            <div className="text-sm sm:text-md">{message.content}</div>
           </div>
         )}
         {message.messageType === "file" && (
@@ -165,13 +165,15 @@ function MessageContainer() {
                 <img src={message.fileUrl} height={300} width={300} alt="" />
               </div>
             ) : (
-              <div className="flex items-center justify-center gap-4">
-                <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3">
+              <div className="flex items-center justify-center gap-1 md:gap-4">
+                <span className="text-white/8 text-sm md:text-3xl bg-black/20 rounded-full p-3">
                   <MdFolderZip />
                 </span>
-                <span>{message.fileUrl.split("/").pop()}</span>
+                <span className="break-all sm:block hidden">
+                  {message.fileUrl.split("/").pop()}
+                </span>
                 <span
-                  className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
+                  className="bg-black/20 p-3 text-sm md:text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
                   onClick={() => downloadFile(message.fileUrl)}
                 >
                   <IoMdArrowRoundDown />
@@ -204,7 +206,7 @@ function MessageContainer() {
                 : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
             }`}
           >
-            {message.content}
+            <div className="text-sm sm:text-md">{message.content}</div>
           </div>
         )}
         {message.messageType === "file" && (
@@ -227,12 +229,14 @@ function MessageContainer() {
               </div>
             ) : (
               <div className="flex items-center justify-center gap-4">
-                <span className="text-white/8 text-3xl bg-black/20 rounded-full p-3">
+                <span className="text-white/8 text-sm md:text-3xl bg-black/20 rounded-full p-3">
                   <MdFolderZip />
                 </span>
-                <span>{message.fileUrl.split("/").pop()}</span>
+                <span className="break-all sm:block hidden">
+                  {message.fileUrl.split("/").pop()}
+                </span>
                 <span
-                  className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
+                  className="bg-black/20 p-3 text-sm md:text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
                   onClick={() => downloadFile(message.fileUrl)}
                 >
                   <IoMdArrowRoundDown />
@@ -312,7 +316,11 @@ function MessageContainer() {
         {showImage && (
           <div className="fixed z-[1000] top-0 left-0 h-[100vh] w-[100vw] flex items-center justify-center backdrop-blur-lg flex-col">
             <div>
-              <img src={imageUrl} alt="" className="h-[80vh] w-full bg-cover" />
+              <img
+                src={imageUrl}
+                alt=""
+                className="h-[30vh] sm:h-[60vh] lg:h-[80vh] w-full bg-cover"
+              />
               <div className="flex gap-5 fixed top-0 mt-5">
                 <button
                   className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
