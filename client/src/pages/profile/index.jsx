@@ -70,7 +70,7 @@ function index() {
           setUserInfo({ ...res.data });
           toast.success("Profile updated successfully.");
 
-          if (userInfo.profileSetup) {
+          if (res.data.profileSetup) {
             navigate("/chat");
           } else {
             toast.error(
