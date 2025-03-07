@@ -15,5 +15,9 @@ export const googleAuthCallback = (req, res) => {
     sameSite: "None",
   });
 
-  res.redirect(process.env.CLIENT_REDIRECT_URL);
+  if (!user.profileSetup) {
+    res.redirect(process.env.CLIENT_SIGNUP_REDIRECT_URL);
+  } else {
+    res.redirect(process.env.CLIENT_LOGIN_REDIRECT_URL);
+  }
 };
