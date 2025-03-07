@@ -129,7 +129,7 @@ function MessageBar() {
           className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
           onClick={handleAttachmentClick}
         >
-          <GrAttachment className="text-lg sm:text-2xl" />
+          <GrAttachment className="text-2xl" />
         </button>
         <input
           type="file"
@@ -142,7 +142,7 @@ function MessageBar() {
             className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
             onClick={() => setEmojiPickerOpen((prev) => !prev)}
           >
-            <RiEmojiStickerLine className="text-lg sm:text-2xl" />
+            <RiEmojiStickerLine className="text-2xl" />
           </button>
           {emojiPickerOpen && (
             <div
