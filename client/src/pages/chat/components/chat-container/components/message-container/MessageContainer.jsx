@@ -314,12 +314,12 @@ function MessageContainer() {
       {renderedMessages}
       <div ref={scrollRef}>
         {showImage && (
-          <div className="fixed z-[1000] top-0 left-0 h-[100vh] w-[100vw] flex items-center justify-center backdrop-blur-lg flex-col">
+          <div className="fixed z-[1000] top-0 left-0 h-[100dvh] w-[100vw] flex items-center justify-center backdrop-blur-lg flex-col">
             <div>
               <img
                 src={imageUrl}
                 alt=""
-                className="h-[30vh] sm:h-[60vh] lg:h-[80vh] w-full bg-cover"
+                className="h-[30dvh] sm:h-[60dvh] lg:h-[80dvh] w-full bg-cover"
               />
               <div className="flex gap-5 fixed top-0 mt-5">
                 <button

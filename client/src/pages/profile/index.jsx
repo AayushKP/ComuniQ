@@ -139,7 +139,7 @@ function index() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-gray-800 to-black h-[100vh] flex items-center justify-center flex-col gap-10">
+    <div className="bg-gradient-to-br from-gray-800 to-black h-[100dvh] flex items-center justify-center flex-col gap-10">
       <div className="bg-gradient-to-r from-gray-900 to-black md:p-10 rounded-xl flex flex-col gap-10 w-[80vw] md:w-max">
         <IoArrowBack
           onClick={handleNavigate}

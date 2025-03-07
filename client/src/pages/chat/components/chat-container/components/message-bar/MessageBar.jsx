@@ -111,7 +111,7 @@ function MessageBar() {
   };
 
   return (
-    <div className="h-[10vh] flex justify-center items-center px-2 mb-2 gap-2 sm:px-8 sm:mb-6 sm:gap-6 relative">
+    <div className="h-[10dvh] flex justify-center items-center px-2 mb-2 gap-2 sm:px-8 sm:mb-6 sm:gap-6 relative">
       <div className="flex-1 flex bg-gray-900 rounded-md items-center gap-3 pr-2 sm:gap-5 sm:pr-5 ">
         <input
           type="text"
