@@ -33,6 +33,7 @@ function ContactsContainer() {
         setDirectMessagesContacts(response.data.contacts);
       }
     };
+
     const getChannels = async () => {
       const res = await apiClient.get(GET_USER_CHANNELS_ROUTE, {
         withCredentials: true,
@@ -43,75 +44,86 @@ function ContactsContainer() {
     getChannels();
   }, [setChannels, setDirectMessagesContacts]);
 
-  const toggleDMDropdown = () => {
-    setIsDMDropdownOpen(!isDMDropdownOpen);
-    if (isChannelDropdownOpen) setIsChannelDropdownOpen(false);
-  };
+   const generalChat = channels.find((channel) => channel.name === "General");
+   const filteredChannels = channels.filter(
+     (channel) => channel.name !== "General"
+   );
 
-  const toggleChannelDropdown = () => {
-    setIsChannelDropdownOpen(!isChannelDropdownOpen);
-    if (isDMDropdownOpen) setIsDMDropdownOpen(false);
-  };
+   const toggleDMDropdown = () => {
+     setIsDMDropdownOpen(!isDMDropdownOpen);
+     if (isChannelDropdownOpen) setIsChannelDropdownOpen(false);
+   };
 
-  return (
-    <div className="relative md:w-[30vw] bg-gradient-to-b from-gray-800 to-gray-950 lg:w-[25vw] xl:w-[20vw] border-r-2 border-[#2f303b] w-full flex flex-col h-[100dvh]">
-      {/* Logo Section */}
-      <div className="pt-3">
-        <Logo />
-      </div>
+   const toggleChannelDropdown = () => {
+     setIsChannelDropdownOpen(!isChannelDropdownOpen);
+     if (isDMDropdownOpen) setIsDMDropdownOpen(false);
+   };
 
-      {/* Direct Messages Section */}
-      <div className="flex flex-col">
-        <div
-          className="flex items-center justify-between px-5 py-2 cursor-pointer"
-          onClick={toggleDMDropdown}
-        >
-          <div className="flex items-center gap-2">
-            {isDMDropdownOpen ? (
-              <ChevronUp className="text-neutral-400" />
-            ) : (
-              <ChevronDown className="text-neutral-400" />
-            )}
-            <Title text="Direct Messages" />
-          </div>
-          <NewDM />
-        </div>
-        {isDMDropdownOpen && (
-          <div className="overflow-y-auto max-h-96 auto-hide-scrollbar">
-            <ContactList contacts={directMessagesContacts} />
-          </div>
-        )}
-      </div>
+   return (
+     <div className="relative md:w-[30vw] bg-gradient-to-b from-gray-800 to-gray-950 lg:w-[25vw] xl:w-[20vw] border-r-2 border-[#2f303b] w-full flex flex-col h-[100dvh]">
+       {/* Logo Section */}
+       <div className="pt-3">
+         <Logo />
+       </div>
 
-      {/* Channels Section */}
-      <div className="flex flex-col">
-        <div
-          className="flex items-center justify-between px-5 py-2 cursor-pointer"
-          onClick={toggleChannelDropdown}
-        >
-          <div className="flex items-center gap-2">
-            {isChannelDropdownOpen ? (
-              <ChevronUp className="text-neutral-400" />
-            ) : (
-              <ChevronDown className="text-neutral-400" />
-            )}
-            <Title text="Channels" />
-          </div>
-          <CreateChannel />
-        </div>
-        {isChannelDropdownOpen && (
-          <div className="overflow-y-auto max-h-96 auto-hide-scrollbar">
-            <ContactList contacts={channels} isChannel={true} />
-          </div>
-        )}
-      </div>
+       {/* Direct Messages Section */}
+       <div className="flex flex-col">
+         <div
+           className="flex items-center justify-between px-5 py-2 cursor-pointer"
+           onClick={toggleDMDropdown}
+         >
+           <div className="flex items-center gap-2">
+             {isDMDropdownOpen ? (
+               <ChevronUp className="text-neutral-400" />
+             ) : (
+               <ChevronDown className="text-neutral-400" />
+             )}
+             <Title text="Direct Messages" />
+           </div>
+           <NewDM />
+         </div>
+         {isDMDropdownOpen && (
+           <div className="overflow-y-auto max-h-96 auto-hide-scrollbar">
+             <ContactList contacts={directMessagesContacts} />
+           </div>
+         )}
+       </div>
 
-      {/* Profile Info Section */}
-      <div className="mt-auto">
-        <ProfileInfoComponent />
-      </div>
-    </div>
-  );
+       {/* Channels Section */}
+       <div className="flex flex-col">
+         <div
+           className="flex items-center justify-between px-5 py-2 cursor-pointer"
+           onClick={toggleChannelDropdown}
+         >
+           <div className="flex items-center gap-2">
+             {isChannelDropdownOpen ? (
+               <ChevronUp className="text-neutral-400" />
+             ) : (
+               <ChevronDown className="text-neutral-400" />
+             )}
+             <Title text="Channels" />
+           </div>
+           <CreateChannel />
+         </div>
+         {isChannelDropdownOpen && (
+           <div className="overflow-y-auto max-h-96 auto-hide-scrollbar">
+             <ContactList contacts={filteredChannels} isChannel={true} />
+           </div>
+         )}
+
+         {generalChat && (
+           <div>
+             <ContactList contacts={[generalChat]} isChannel={true} />
+           </div>
+         )}
+       </div>
+
+       {/* Profile Info Section */}
+       <div className="mt-auto">
+         <ProfileInfoComponent />
+       </div>
+     </div>
+   );
 }
 
 export default ContactsContainer;
