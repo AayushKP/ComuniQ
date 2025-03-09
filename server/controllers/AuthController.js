@@ -3,6 +3,7 @@ import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
 import cloudinary from "../config/cloudinary.js";
 import { unlink } from "fs/promises";
+import Channel from "../models/ChannelModel.js";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -135,6 +136,16 @@ export const updateProfile = async (req, res, next) => {
 
     if (!userData) {
       return res.status(404).send("User not found");
+    }
+
+    let generalChat = await Channel.findOne({ isGeneral: true });
+    if (!generalChat) {
+      return res.status(500).json({ error: "General chat not initialized" });
+    }
+    if (!generalChat.members.includes(userId)) {
+      await Channel.findByIdAndUpdate(generalChat._id, {
+        $push: { members: userId },
+      });
     }
 
     return res.status(200).json({
