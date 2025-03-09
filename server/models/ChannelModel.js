@@ -6,7 +6,13 @@ const channelSchema = new mongoose.Schema({
     required: true,
   },
   members: [{ type: mongoose.Schema.ObjectId, ref: "Users", required: true }],
-  admin: { type: mongoose.Schema.ObjectId, ref: "Users", required: true },
+  admin: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Users",
+    required: function () {
+      return !this.isGeneral;
+    }, // Admin is required only if not a General Chat
+  },
   messages: [
     {
       type: mongoose.Schema.ObjectId,
@@ -14,6 +20,7 @@ const channelSchema = new mongoose.Schema({
       required: false,
     },
   ],
+  isGeneral: { type: Boolean, default: false },
   createdAt: {
     type: Date,
     default: Date.now(),
