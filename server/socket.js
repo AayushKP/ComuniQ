@@ -97,9 +97,11 @@ const setupSocket = (server) => {
           io.to(memberSocketId).emit("receive-channel-message", finalData);
         }
       });
-      const adminSocketId = userSocketMap.get(channel.admin._id.toString());
-      if (adminSocketId) {
-        io.to(adminSocketId).emit("receive-channel-message", finalData);
+      if (channel.admin && channel.admin._id) {
+        const adminSocketId = userSocketMap.get(channel.admin._id.toString());
+        if (adminSocketId) {
+          io.to(adminSocketId).emit("receive-channel-message", finalData);
+        }
       }
     }
   };
