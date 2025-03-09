@@ -30,7 +30,7 @@ const ContactList = ({ contacts, isChannel = false }) => {
   );
 
   return (
-    <div className="mt-5">
+    <div>
       {contacts.map((contact) => (
         <div
           key={contact._id}
