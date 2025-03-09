@@ -32,7 +32,6 @@ function NewDM() {
       const response = await apiClient.get(GET_CONTACTS_ROUTES, {
         withCredentials: true,
       });
-      console.log(response.data.contacts);
       setAllContacts(response.data.contacts);
     };
     getData();

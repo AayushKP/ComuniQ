@@ -61,12 +61,10 @@ function ContactsContainer() {
 
    return (
      <div className="relative md:w-[30vw] bg-gradient-to-b from-gray-800 to-gray-950 lg:w-[25vw] xl:w-[20vw] border-r-2 border-[#2f303b] w-full flex flex-col h-[100dvh]">
-       {/* Logo Section */}
        <div className="pt-3">
          <Logo />
        </div>
 
-       {/* Direct Messages Section */}
        <div className="flex flex-col">
          <div
            className="flex items-center justify-between px-5 py-2 cursor-pointer"
@@ -89,7 +87,6 @@ function ContactsContainer() {
          )}
        </div>
 
-       {/* Channels Section */}
        <div className="flex flex-col">
          <div
            className="flex items-center justify-between px-5 py-2 cursor-pointer"
@@ -118,7 +115,6 @@ function ContactsContainer() {
          )}
        </div>
 
-       {/* Profile Info Section */}
        <div className="mt-auto">
          <ProfileInfoComponent />
        </div>
