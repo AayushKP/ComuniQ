@@ -12,6 +12,7 @@ import {
   HOST,
 } from "@/utils/constants";
 import moment from "moment/moment";
+import MessagesSkeleton from "./MessageSkeleton";
 
 function MessageContainer() {
   const scrollRef = useRef(null);
@@ -25,6 +26,7 @@ function MessageContainer() {
     setIsDownloading,
   } = useAppStore();
 
+  const [loading, setLoading] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -34,9 +36,11 @@ function MessageContainer() {
   // Fetch messages with caching
   const fetchMessages = useCallback(async () => {
     if (!selectedChatData?._id) return;
+    setLoading(true);
     const cacheKey = `${selectedChatType}_${selectedChatData._id}`;
     if (messagesCache.current[cacheKey]) {
       setSelectedChatMessages(messagesCache.current[cacheKey]);
+      setLoading(false);
       return;
     }
     try {
@@ -59,6 +63,8 @@ function MessageContainer() {
       }
     } catch (error) {
       console.error("Error fetching messages:", error);
+    } finally {
+      setLoading(false);
     }
   }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
 
@@ -284,6 +290,9 @@ function MessageContainer() {
 
   // Memoize messages for performance and add date separators.
   const renderedMessages = useMemo(() => {
+    if (loading) {
+      return <MessagesSkeleton />;
+    }
     let lastDate = null;
     return selectedChatMessages.map((message) => {
       const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
@@ -303,6 +312,7 @@ function MessageContainer() {
       );
     });
   }, [
+    loading,
     selectedChatMessages,
     selectedChatType,
     renderDMMessages,

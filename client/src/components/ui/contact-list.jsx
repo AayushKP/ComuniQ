@@ -2,7 +2,23 @@ import React from "react";
 import { useAppStore } from "@/store/slices";
 import { Avatar, AvatarImage } from "./avatar";
 import { getColor } from "@/lib/utils";
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
+
+const ContactListSkeleton = ({ count = 1 }) => {
+  return (
+    <div>
+      {Array.from({ length: count }).map((_, index) => (
+        <div
+          key={index}
+          className="pl-10 py-2 flex gap-5 items-center animate-pulse"
+        >
+          <div className="h-10 w-10 rounded-full bg-gray-700"></div>
+          <div className="h-4 w-32 bg-gray-700 rounded"></div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const ContactList = ({ contacts, isChannel = false }) => {
   const {
@@ -11,6 +27,14 @@ const ContactList = ({ contacts, isChannel = false }) => {
     setSelectedChatData,
     setSelectedChatMessages,
   } = useAppStore();
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (contacts.length > 0) {
+      setLoading(false);
+    }
+  }, [contacts]);
 
   const handleClick = useCallback(
     (contact) => {
@@ -28,6 +52,8 @@ const ContactList = ({ contacts, isChannel = false }) => {
       isChannel,
     ]
   );
+
+  if (loading) return <ContactListSkeleton />;
 
   return (
     <div>
