@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useAppStore } from "@/store/slices";
 import { Avatar, AvatarImage } from "./avatar";
 import { getColor } from "@/lib/utils";
-import { useCallback, useState, useEffect } from "react";
 
-const ContactListSkeleton = ({ count = 1 }) => {
+export const ContactListSkeleton = ({ count = 1 }) => {
   return (
     <div>
       {Array.from({ length: count }).map((_, index) => (
@@ -20,21 +19,13 @@ const ContactListSkeleton = ({ count = 1 }) => {
   );
 };
 
-const ContactList = ({ contacts, isChannel = false }) => {
+const ContactList = ({ contacts, isChannel = false, loading }) => {
   const {
     selectedChatData,
     setSelectedChatType,
     setSelectedChatData,
     setSelectedChatMessages,
   } = useAppStore();
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (contacts.length > 0) {
-      setLoading(false);
-    }
-  }, [contacts]);
 
   const handleClick = useCallback(
     (contact) => {
