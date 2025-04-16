@@ -88,7 +88,9 @@ const ContactList = ({ contacts, isChannel = false, loading }) => {
             <span>
               {isChannel
                 ? contact.name
-                : `${contact.firstName} ${contact.lastName}`}
+                : contact.firstName || contact.lastName
+                ? `${contact.firstName ?? ""} ${contact.lastName ?? ""}`.trim()
+                : contact.email}
             </span>
           </div>
         </div>
