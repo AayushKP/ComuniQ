@@ -140,18 +140,18 @@ function index() {
 
   return (
     <div className="bg-gradient-to-br from-gray-800 to-black h-[100dvh] flex items-center justify-center flex-col gap-10">
-      <div className="bg-gradient-to-r from-gray-900 to-black p-10 rounded-xl flex flex-col gap-10 w-[80vw] md:w-max">
+      <div className="bg-gradient-to-r from-gray-900 to-black p-6 md:p-10 rounded-xl flex flex-col gap-10 w-[80vw] md:w-max">
         <IoArrowBack
           onClick={handleNavigate}
           className="text-xl sm:text-2xl lg:text-3xl text-white/90 cursor-pointer"
         />
         <div className="grid grid-cols-2">
           <div
-            className="h-full w-44 md:w-48 md:h-48 relative flex items-center justify-center "
+            className="h-full w-24 sm:w-32 md:w-48 md:h-48 relative flex items-center justify-center "
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
           >
-            <Avatar className="w-44 h-44 md:w-48 md:h-48 rounded-full overflow-hidden">
+            <Avatar className="w-24 h-24 sm:w-28 sm:h-28 md:w-48 md:h-48 rounded-full overflow-hidden">
               {image ? (
                 <AvatarImage
                   src={image}
@@ -222,7 +222,7 @@ function index() {
             <div className="w-full flex gap-5">
               {colors.map((color, index) => (
                 <div
-                  className={`${color} h-8 w-8 rounded-full cursor-pointer transition-all duration-300 
+                  className={`${color} h-5 w-5 md:h-8 md:w-8 rounded-full cursor-pointer transition-all duration-300 
                   ${
                     selectedColor === index
                       ? "outline outline-white outline-5"
