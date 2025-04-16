@@ -52,8 +52,8 @@ const setupSocket = (server) => {
     console.log("Message created:", createdMessage);
 
     const messageData = await Message.findById(createdMessage._id)
-      .populate("sender", "id email firstName image color")
-      .populate("recipient", "id email firstName image color");
+      .populate("sender", "id email firstName lastName image color")
+      .populate("recipient", "id email firstName lastName image color");
 
     console.log("Message data:", messageData);
 
