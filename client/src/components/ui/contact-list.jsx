@@ -31,9 +31,9 @@ const ContactList = ({ contacts, isChannel = false, loading }) => {
     (contact) => {
       if (selectedChatData?._id === contact._id) return;
 
+      setSelectedChatMessages([]);
       setSelectedChatType(isChannel ? "channel" : "contact");
       setSelectedChatData(contact);
-      setSelectedChatMessages([]);
     },
     [
       selectedChatData,

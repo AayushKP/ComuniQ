@@ -77,6 +77,7 @@ function MessageContainer() {
     ) {
       const cacheKey = `${selectedChatType}_${selectedChatData._id}`;
       messagesCache.current[cacheKey] = selectedChatMessages;
+      console.log(selectedChatData?._id);
     }
   }, [selectedChatMessages, selectedChatData, selectedChatType]);
 
@@ -84,6 +85,7 @@ function MessageContainer() {
   useEffect(() => {
     if (selectedChatData?._id) {
       fetchMessages();
+      console.log(selectedChatData?._id);
     }
   }, [selectedChatData, selectedChatType, fetchMessages]);
 

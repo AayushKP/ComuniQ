@@ -22,7 +22,8 @@ import apiClient from "@/lib/api-client";
 import { useAppStore } from "@/store/slices";
 
 function NewDM() {
-  const { setSelectedChatType, setSelectedChatData } = useAppStore();
+  const { setSelectedChatType, setSelectedChatData, setSelectedChatMessages } =
+    useAppStore();
   const [openNewContactModel, setOpenNewContactModel] = useState(false);
   const [allContacts, setAllContacts] = useState([]);
   const [searchedContacts, setSearchedContacts] = useState([]);
@@ -58,6 +59,7 @@ function NewDM() {
     setOpenNewContactModel(false);
     setSelectedChatType("contact");
     setSelectedChatData(contact);
+    setSelectedChatMessages([]);
     console.log(contact);
     setSearchedContacts([]);
   };
