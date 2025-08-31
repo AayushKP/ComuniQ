@@ -2,6 +2,8 @@
 
 **ComuniQ** is a feature-rich, real-time chat application designed for smooth and secure communication. It supports direct and group messaging, media and emoji sharing, Google authentication, and more. Built with the MERN stack and styled using Tailwind CSS, ComuniQ ensures a modern and responsive user interface. Socket.IO powers its real-time capabilities, while tools like Zustand and Zod streamline state management and validation. Whether it's private chats or community discussions, ComuniQ offers a robust messaging experience across devices.
 
+Live : chat-comuniq.vercel.app
+
 ---
 
 ## 🚀 Features
