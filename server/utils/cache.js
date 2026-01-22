@@ -1,7 +1,7 @@
 //Cache helper functions
-import redis from "../config/redis";
+import redis from "../config/redis.js";
 const USER_TTL = 1800;
-const ONLINE_PREFIX = "online";
+const ONLINE_PREFIX = "online:";
 const USER_PREFIX = "user:";
 
 //USER SESSION CACHE
