@@ -3,6 +3,7 @@ import redis from "../config/redis.js";
 const USER_TTL = 1800;
 const ONLINE_PREFIX = "online:";
 const USER_PREFIX = "user:";
+const SOCKET_PREFIX = "socket:";
 
 //USER SESSION CACHE
 export const getCachedUser = async (userId) => {
@@ -39,7 +40,9 @@ export const deleteCachedUser = async (userId) => {
 
 export const setUserOnline = async (userId, socketId) => {
   try {
+    //set both mappings to avoid changing things in frontend
     await redis.set(`${ONLINE_PREFIX}${userId}`, socketId);
+    await redis.set(`${SOCKET_PREFIX}${socketId}`, userId);
   } catch (error) {
     console.error("Set online error:", error.message);
   }
@@ -47,7 +50,11 @@ export const setUserOnline = async (userId, socketId) => {
 
 export const setUserOffline = async (userId) => {
   try {
-    await redis.del(`${ONLINE_PREFIX}${userId}`);
+    const userId = await redis.get(`${SOCKET_PREFIX}${socketId}`);
+    if (userId) {
+      await redis.del(`${ONLINE_PREFIX}${userId}`);
+    }
+    await redis.del(`${SOCKET_PREFIX}${socketId}`);
   } catch (error) {
     console.error("Set offline error:", error.message);
   }
