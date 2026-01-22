@@ -40,6 +40,12 @@ export const deleteCachedUser = async (userId) => {
 
 export const setUserOnline = async (userId, socketId) => {
   try {
+    // Clean up old socket mapping if user was already online
+    const oldSocketId = await redis.get(`${ONLINE_PREFIX}${userId}`);
+    if (oldSocketId) {
+      await redis.del(`${SOCKET_PREFIX}${oldSocketId}`);
+    }
+
     //set both mappings to avoid changing things in frontend
     await redis.set(`${ONLINE_PREFIX}${userId}`, socketId);
     await redis.set(`${SOCKET_PREFIX}${socketId}`, userId);
@@ -48,7 +54,7 @@ export const setUserOnline = async (userId, socketId) => {
   }
 };
 
-export const setUserOffline = async (userId) => {
+export const setUserOffline = async (socketId) => {
   try {
     const userId = await redis.get(`${SOCKET_PREFIX}${socketId}`);
     if (userId) {

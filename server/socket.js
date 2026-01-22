@@ -1,6 +1,11 @@
 import { Server as SocketIOServer } from "socket.io";
 import Message from "./models/MessageModel.js";
 import Channel from "./models/ChannelModel.js";
+import {
+  setUserOnline,
+  setUserOffline,
+  getUserSocketId,
+} from "./utils/cache.js";
 
 const setupSocket = (server) => {
   const io = new SocketIOServer(server, {
@@ -11,12 +16,10 @@ const setupSocket = (server) => {
     },
   });
 
-  const userSocketMap = new Map();
-
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     const userId = socket.handshake.query.userId;
     if (userId) {
-      userSocketMap.set(userId, socket.id);
+      await setUserOnline(userId, socket.id);
       console.log(`User Connected: ${userId} with socket ID: ${socket.id}`);
     } else {
       console.log("User ID not provided during connection");
@@ -26,8 +29,8 @@ const setupSocket = (server) => {
       sendMessage(message);
     });
 
-    socket.on("disconnect", () => {
-      handleDisconnect(socket);
+    socket.on("disconnect", async () => {
+      await handleDisconnect(socket);
     });
 
     socket.on("send-channel-message", (message) => {
@@ -35,19 +38,15 @@ const setupSocket = (server) => {
     });
   });
 
-  const handleDisconnect = (socket) => {
+  const handleDisconnect = async (socket) => {
     console.log(`Client disconnected: ${socket.id}`);
-    for (const [userId, socketId] of userSocketMap.entries()) {
-      if (socketId === socket.id) {
-        userSocketMap.delete(userId);
-        break;
-      }
-    }
+    await setUserOffline(socket.id);
   };
 
   const sendMessage = async (message) => {
-    const senderSocketId = userSocketMap.get(message.sender);
-    const recipientSocketId = userSocketMap.get(message.recipient);
+    const senderSocketId = await getUserSocketId(message.sender);
+    const recipientSocketId = await getUserSocketId(message.recipient);
+
     const createdMessage = await Message.create(message);
     console.log("Message created:", createdMessage);
 
@@ -90,14 +89,16 @@ const setupSocket = (server) => {
     const finalData = { ...messageData._doc, channelId: channel._id };
 
     if (channel && channel.members) {
-      channel.members.forEach((member) => {
-        const memberSocketId = userSocketMap.get(member._id.toString());
+      for (const member of channel.members) {
+        const memberSocketId = await getUserSocketId(member._id.toString());
         if (memberSocketId) {
           io.to(memberSocketId).emit("receive-channel-message", finalData);
         }
-      });
+      }
       if (channel.admin && channel.admin._id) {
-        const adminSocketId = userSocketMap.get(channel.admin._id.toString());
+        const adminSocketId = await getUserSocketId(
+          channel.admin._id.toString(),
+        );
         if (adminSocketId) {
           io.to(adminSocketId).emit("receive-channel-message", finalData);
         }

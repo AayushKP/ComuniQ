@@ -4,6 +4,11 @@ import jwt from "jsonwebtoken";
 import cloudinary from "../config/cloudinary.js";
 import { unlink } from "fs/promises";
 import Channel from "../models/ChannelModel.js";
+import {
+  getCachedUser,
+  setCachedUser,
+  deleteCachedUser,
+} from "../utils/cache.js";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -91,12 +96,21 @@ const login = async (req, res, next) => {
 
 export const getUserInfo = async (req, res, next) => {
   try {
+    //cache hit
+    const cachedUser = await getCachedUser(req.userId);
+    if (cachedUser) {
+      console.log("Cache hit for user:", req.userId);
+      return res.status(200).json(cachedUser);
+    }
+    console.log("Cache miss for user: ", req.userId);
+
+    //cache miss
     const userData = await User.findById(req.userId);
     if (!userData) {
-      return res.status(404).send("User data not found ");
+      return res.status(404).send("User data not found");
     }
 
-    return res.status(200).json({
+    const responseData = {
       id: userData.id,
       email: userData.email,
       profileSetup: userData.profileSetup,
@@ -104,7 +118,11 @@ export const getUserInfo = async (req, res, next) => {
       lastName: userData.lastName,
       image: userData.image,
       color: userData.color,
-    });
+    };
+
+    await setCachedUser(req.userId, responseData);
+
+    return res.status(200).json(responseData);
   } catch (error) {
     console.log(error.message);
     return res.status(500).send("Internal Server Error");
@@ -131,12 +149,15 @@ export const updateProfile = async (req, res, next) => {
     const userData = await User.findByIdAndUpdate(
       userId,
       { $set: updateData },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!userData) {
       return res.status(404).send("User not found");
     }
+
+    //Invalidate cache after update
+    await deleteCachedUser(userId);
 
     let generalChat = await Channel.findOne({ isGeneral: true });
     if (!generalChat) {
@@ -176,8 +197,10 @@ export const addProfileImage = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       req.userId,
       { image: result.secure_url },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
+
+    await deleteCachedUser(req.userId);
 
     // Optionally delete the local file
     await unlink(req.file.path);
@@ -202,13 +225,13 @@ export const removeProfileImage = async (req, res, next) => {
       // Extract public_id from URL for deletion
       const publicId = user.image.split("/").slice(-1)[0].split(".")[0];
       await cloudinary.uploader.destroy(
-        `communique/profile-images/${publicId}`
+        `communique/profile-images/${publicId}`,
       );
     }
 
     user.image = null;
     await user.save();
-
+    await deleteCachedUser(userId);
     return res.status(200).send("Profile image removed successfully");
   } catch (error) {
     console.log(error.message);
@@ -216,9 +239,10 @@ export const removeProfileImage = async (req, res, next) => {
   }
 };
 
-
 export const logout = async (req, res, next) => {
   try {
+    await deleteCachedUser(req.userId);
+    console.log("Cache invalidated for user: ", req.userId);
     res.cookie("jwt", "", { maxAge: 1, secure: true, sameSite: "None" });
 
     return res.status(200).send("Logout successful");
