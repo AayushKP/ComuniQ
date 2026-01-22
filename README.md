@@ -41,129 +41,55 @@ A production-ready, real-time chat application designed for seamless and secure 
 
 ### Media & Content
 
-- **File Sharing** - Upload and share documents and files
-- **Image Sharing** - Send and receive images with inline preview
-- **Cloud Storage** - Media assets managed via Cloudinary integration
-- **File Downloads** - Direct download capability for shared files
+- **File Sharing** - Share images, documents, and media files
+- **Cloud Storage** - Media files stored securely on Cloudinary CDN
+- **Profile Images** - Custom user avatars with upload/remove functionality
 
-### User Experience
+### Performance & Scalability
 
-- **Emoji Picker** - Rich emoji selection for expressive messaging
-- **Responsive Design** - Optimized layouts for desktop, tablet, and mobile devices
-- **Smooth Animations** - Polished UI transitions with Framer Motion
-- **Modern UI Components** - Consistent design system using Shadcn/UI
-
-### User Management
-
-- **Profile Customization** - Personalized user profiles with avatars and display names
-- **Contact Search** - Find and connect with other platform users
-- **Contact List** - Organized view of connections with recent activity
+- **Redis Caching** - User session caching for ultra-fast API responses
+- **Online Presence** - Real-time user presence tracking via Redis
+- **Multi-Server Ready** - Redis-backed socket mapping enables horizontal scaling
+- **Optimized Queries** - Database query optimization with proper indexing
 
 ---
 
 ## Architecture
 
-ComuniQ follows a modern client-server architecture with real-time communication capabilities.
-
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                              CLIENT LAYER                               │
-│                                                                         │
-│  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │                     React Application (Vite)                    │    │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │    │
-│  │  │    Pages    │  │ Components  │  │     State Management    │  │    │
-│  │  │  - Auth     │  │  - Chat     │  │      (Zustand Store)    │  │    │
-│  │  │  - Chat     │  │  - Profile  │  │  - Auth Slice           │  │    │
-│  │  │  - Profile  │  │  - Channel  │  │  - Chat Slice           │  │    │
-│  │  └─────────────┘  └─────────────┘  └─────────────────────────┘  │    │
-│  │  ┌─────────────────────────────────────────────────────────────┐│    │
-│  │  │              Socket.IO Client Connection                    ││    │
-│  │  └─────────────────────────────────────────────────────────────┘│    │
-│  └─────────────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                          HTTPS / WSS Connections
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                              SERVER LAYER                               │
-│                                                                         │
-│  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │                    Node.js + Express Server                     │    │
-│  │  ┌─────────────────────────────────────────────────────────────┐│    │
-│  │  │                     NGINX Reverse Proxy                     ││    │
-│  │  │                                                             ││    │
-│  │  └─────────────────────────────────────────────────────────────┘│    │
-│  │                             │                                   │    │
-│  │  ┌──────────────────────────┴───────────────────────────────┐   │    │
-│  │  │                                                          │   │    │
-│  │  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │   │    │
-│  │  │  │  REST API    │  │  Socket.IO   │  │  Middleware  │    │   │    │
-│  │  │  │  Endpoints   │  │   Server     │  │  - Auth      │    │   │    │
-│  │  │  │  - /auth     │  │  - Messages  │  │  - Multer    │    │   │    │
-│  │  │  │  - /contacts │  │  - Channels  │  │  - CORS      │    │   │    │
-│  │  │  │  - /messages │  │  - Presence  │  │              │    │   │    │
-│  │  │  │  - /channels │  │              │  │              │    │   │    │
-│  │  │  └──────────────┘  └──────────────┘  └──────────────┘    │   │    │
-│  │  │                                                          │   │    │
-│  │  └──────────────────────────────────────────────────────────┘   │    │
-│  │                              │                                  │    │
-│  │  ┌──────────────────────────┴───────────────────────────────┐   │    │
-│  │  │                      Controllers                         │   │    │
-│  │  │  ┌────────────────┐  ┌──────────────┐  ┌──────────────┐  │   │    │
-│  │  │  │ AuthController │  │Messages      │  │ Channel      │  │   │    │
-│  │  │  │ - signup       │  │ Controller   │  │ Controller   │  │   │    │
-│  │  │  │ - login        │  │ - getMessages│  │ - create     │  │   │    │
-│  │  │  │ - getUserInfo  │  │ - uploadFile │  │ - getChannels│  │   │    │
-│  │  │  │ - updateProfile│  │              │  │ - getMessages│  │   │    │
-│  │  │  └────────────────┘  └──────────────┘  └──────────────┘  │   │    │
-│  │  └──────────────────────────────────────────────────────────┘   │    │
-│  └─────────────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                             DATA LAYER                                  │
-│                                                                         │
-│  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │                         MongoDB Database                        │    │
-│  │  ┌─────────────────┐  ┌─────────────────┐  ┌────────────────┐   │    │
-│  │  │   Users         │  │    Messages     │  │    Channels    │   │    │
-│  │  │  - email        │  │  - sender       │  │  - name        │   │    │
-│  │  │  - password     │  │  - recipient    │  │  - members     │   │    │
-│  │  │  - firstName    │  │  - content      │  │  - admin       │   │    │
-│  │  │  - lastName     │  │  - messageType  │  │  - messages    │   │    │
-│  │  │  - image        │  │  - fileUrl      │  │  - isGeneral   │   │    │
-│  │  │  - googleId     │  │  - timestamp    │  │                │   │    │
-│  │  └─────────────────┘  └─────────────────┘  └────────────────┘   │    │
-│  └─────────────────────────────────────────────────────────────────┘    │
-│                                                                         │
-│  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │                         Cloudinary CDN                          │    │
-│  │                    (Image & File Storage)                       │    │
-│  └─────────────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                         CLIENT (React)                          │
+│                                                                 │
+│   React + Vite │ Zustand State │ Socket.IO Client │ Tailwind    │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        SERVER (Node.js)                         │
+│                                                                 │
+│   Express.js │ Socket.IO │ JWT Auth │ Passport.js               │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                    CACHING LAYER                        │   │
+│   │                                                         │   │
+│   │   Redis (Upstash)                                       │   │
+│   │   ├── User Session Cache (30 min TTL)                   │   │
+│   │   ├── Online Presence (userId → socketId)               │   │
+│   │   └── Socket Mapping (socketId → userId)                │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+              ┌────────────┴────────────┐
+              ▼                         ▼
+┌──────────────────────┐   ┌──────────────────────┐
+│   MongoDB Atlas      │   │   Cloudinary CDN     │
+│                      │   │                      │
+│   • Users            │   │   • Profile Images   │
+│   • Messages         │   │   • Shared Files     │
+│   • Channels         │   │                      │
+└──────────────────────┘   └──────────────────────┘
 ```
-
-### Data Flow
-
-1. **Authentication Flow**
-
-   - User submits credentials via React frontend
-   - Express server validates and issues JWT token
-   - Token stored client-side for subsequent API requests
-
-2. **Real-Time Messaging Flow**
-
-   - Client establishes WebSocket connection via Socket.IO
-   - Messages emitted to server, persisted to MongoDB
-   - Server broadcasts to recipient(s) via their socket connection
-
-3. **File Upload Flow**
-   - Client sends file via Multer middleware
-   - Server uploads to Cloudinary, receives CDN URL
-   - URL stored in message document and delivered to recipients
 
 ---
 
@@ -171,45 +97,42 @@ ComuniQ follows a modern client-server architecture with real-time communication
 
 ### Frontend
 
-| Technology       | Purpose                           |
-| ---------------- | --------------------------------- |
-| React            | UI component library              |
-| Vite             | Build tool and development server |
-| Tailwind CSS     | Utility-first CSS framework       |
-| Shadcn/UI        | Accessible component primitives   |
-| Zustand          | Lightweight state management      |
-| Zod              | Schema validation                 |
-| Framer Motion    | Animation library                 |
-| Socket.IO Client | Real-time WebSocket communication |
+| Technology       | Purpose                 |
+| ---------------- | ----------------------- |
+| React 18         | UI Framework            |
+| Vite             | Build Tool              |
+| Zustand          | State Management        |
+| Socket.IO Client | Real-time Communication |
+| Tailwind CSS     | Styling                 |
+| Shadcn/UI        | Component Library       |
 
 ### Backend
 
-| Technology  | Purpose                                           |
-| ----------- | ------------------------------------------------- |
-| Node.js     | JavaScript runtime environment                    |
-| Express     | Web application framework                         |
-| Socket.IO   | Real-time bidirectional event-based communication |
-| Passport.js | Authentication middleware (Google OAuth)          |
-| Multer      | File upload handling                              |
-| JWT         | Stateless authentication tokens                   |
-| Bcrypt      | Password hashing                                  |
+| Technology  | Purpose             |
+| ----------- | ------------------- |
+| Node.js     | Runtime Environment |
+| Express.js  | Web Framework       |
+| Socket.IO   | WebSocket Server    |
+| JWT         | Authentication      |
+| Passport.js | OAuth Integration   |
+| Bcrypt      | Password Hashing    |
 
-### Database & Storage
+### Database & Caching
 
-| Technology | Purpose                           |
-| ---------- | --------------------------------- |
-| MongoDB    | NoSQL document database           |
-| Mongoose   | MongoDB object modeling           |
-| Cloudinary | Cloud-based media storage and CDN |
+| Technology      | Purpose            |
+| --------------- | ------------------ |
+| MongoDB Atlas   | Primary Database   |
+| Mongoose        | ODM                |
+| Redis (Upstash) | Caching & Presence |
 
-### DevOps
+### Cloud Services
 
-| Technology     | Purpose                           |
-| -------------- | --------------------------------- |
-| Docker         | Containerization                  |
-| Docker Compose | Multi-container orchestration     |
-| NGINX          | Reverse proxy and SSL termination |
-| Vercel         | Frontend deployment               |
+| Service        | Purpose          |
+| -------------- | ---------------- |
+| Cloudinary     | Media Storage    |
+| Upstash        | Managed Redis    |
+| Vercel         | Frontend Hosting |
+| Render/Railway | Backend Hosting  |
 
 ---
 
@@ -217,45 +140,42 @@ ComuniQ follows a modern client-server architecture with real-time communication
 
 ```
 ComuniQ/
-├── client/                      # React frontend application
-│   ├── public/                  # Static assets
+├── client/                    # React Frontend
 │   ├── src/
-│   │   ├── assets/              # Images and static files
-│   │   ├── components/          # Reusable UI components
-│   │   ├── context/             # React context providers
-│   │   ├── lib/                 # Utility libraries
-│   │   ├── pages/               # Route-based page components
-│   │   ├── store/               # Zustand state management
-│   │   ├── utils/               # Helper functions
-│   │   ├── App.jsx              # Root application component
-│   │   └── main.jsx             # Application entry point
-│   ├── index.html               # HTML template
-│   ├── package.json             # Frontend dependencies
-│   ├── tailwind.config.js       # Tailwind configuration
-│   └── vite.config.js           # Vite configuration
+│   │   ├── components/        # Reusable UI components
+│   │   ├── pages/             # Route pages
+│   │   ├── store/             # Zustand state management
+│   │   ├── lib/               # Utilities and helpers
+│   │   └── context/           # Socket context provider
+│   └── ...
 │
-├── server/                      # Node.js backend application
-│   ├── config/                  # Configuration files
-│   ├── controllers/             # Request handlers
-│   │   ├── AuthController.js    # Authentication logic
-│   │   ├── ChannelController.js # Channel management
-│   │   ├── ContactsController.js# Contact operations
-│   │   ├── GoogleAuthController.js # OAuth handling
-│   │   └── MessagesController.js# Message operations
-│   ├── middlewares/             # Express middleware
-│   ├── models/                  # Mongoose schemas
-│   │   ├── ChannelModel.js      # Channel schema
-│   │   ├── MessageModel.js      # Message schema
-│   │   └── UserModel.js         # User schema
-│   ├── nginx/                   # NGINX configuration
-│   ├── routes/                  # API route definitions
-│   ├── docker-compose.yml       # Container orchestration
-│   ├── dockerfile               # Container image definition
-│   ├── index.js                 # Server entry point
-│   ├── package.json             # Backend dependencies
-│   └── socket.js                # Socket.IO event handlers
+├── server/                    # Node.js Backend
+│   ├── config/
+│   │   ├── cloudinary.js      # Cloudinary configuration
+│   │   ├── passport.js        # Google OAuth configuration
+│   │   └── redis.js           # Redis connection
+│   ├── controllers/
+│   │   ├── AuthController.js  # Authentication logic
+│   │   ├── MessagesController.js
+│   │   ├── ChannelController.js
+│   │   └── ContactsController.js
+│   ├── middlewares/
+│   │   └── AuthMiddleware.js  # JWT verification
+│   ├── models/
+│   │   ├── UserModel.js
+│   │   ├── MessageModel.js
+│   │   └── ChannelModel.js
+│   ├── routes/
+│   │   ├── AuthRoutes.js
+│   │   ├── MessagesRoutes.js
+│   │   ├── ChannelRoutes.js
+│   │   └── ContactRoutes.js
+│   ├── utils/
+│   │   └── cache.js           # Redis cache helpers
+│   ├── socket.js              # Socket.IO configuration
+│   └── index.js               # Server entry point
 │
-└── README.md                    # Project documentation
+└── README.md
 ```
 
 ---
@@ -264,30 +184,28 @@ ComuniQ/
 
 ### Prerequisites
 
-- Node.js v18.0.0 or higher
-- npm v9.0.0 or higher
-- MongoDB instance (local or cloud)
+- Node.js 18+
+- MongoDB Atlas account
 - Cloudinary account
+- Upstash Redis account
 - Google Cloud Console project (for OAuth)
 
-### Clone the Repository
+### Clone Repository
 
 ```bash
-git clone https://github.com/AayushKP/ComuniQ.git
+git clone https://github.com/yourusername/ComuniQ.git
 cd ComuniQ
 ```
 
-### Backend Setup
+### Install Dependencies
 
 ```bash
+# Install server dependencies
 cd server
 npm install
-```
 
-### Frontend Setup
-
-```bash
-cd client
+# Install client dependencies
+cd ../client
 npm install
 ```
 
@@ -297,116 +215,93 @@ npm install
 
 ### Server Environment Variables
 
-Create a `.env` file in the `server/` directory:
+Create `server/.env`:
 
 ```env
-# Server Configuration
-PORT=5000
+# Server
+PORT=3000
 ORIGIN=http://localhost:5173
 
-# Authentication
-JWT_KEY=your_secure_jwt_secret_key
-
 # Database
-DATABASE_URL=mongodb://localhost:27017/comuniq
+DATABASE_URL=mongodb+srv://username:password@cluster.mongodb.net/comuniq
 
-# Cloudinary Configuration
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+# Authentication
+JWT_KEY=your-secret-key
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 
-# Google OAuth
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-CLIENT_LOGIN_REDIRECT_URL=http://localhost:5173/login
-CLIENT_SIGNUP_REDIRECT_URL=http://localhost:5173/signup
+# OAuth Redirects
+CLIENT_LOGIN_REDIRECT_URL=http://localhost:5173/chat
+CLIENT_SIGNUP_REDIRECT_URL=http://localhost:5173/profile
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+
+# Redis (Upstash)
+UPSTASH_REDIS_URL=https://your-redis.upstash.io
+UPSTASH_REDIS_TOKEN=your-redis-token
 ```
 
 ### Client Environment Variables
 
-Create a `.env` file in the `client/` directory:
+Create `client/.env`:
 
 ```env
-VITE_SERVER_URL=http://localhost:5000
+VITE_SERVER_URL=http://localhost:3000
 ```
 
 ---
 
 ## Usage
 
-### Development Mode
-
-Start the backend server:
+### Development
 
 ```bash
-cd server
+# Start server (from /server directory)
+npm run dev
+
+# Start client (from /client directory)
 npm run dev
 ```
 
-Start the frontend development server:
+### Production Build
 
 ```bash
-cd client
-npm run dev
-```
-
-The application will be available at `http://localhost:5173`.
-
-### Production Mode
-
-Build the frontend:
-
-```bash
+# Build client
 cd client
 npm run build
-```
 
-Start the production server:
-
-```bash
-cd server
+# Start server in production
+cd ../server
 npm start
-```
-
-### Docker Deployment
-
-```bash
-cd server
-docker-compose up -d
 ```
 
 ---
 
 ## API Reference
 
-### Authentication Endpoints
+### Authentication
 
-| Method | Endpoint                         | Description              |
-| ------ | -------------------------------- | ------------------------ |
-| POST   | `/api/auth/signup`               | Create new user account  |
-| POST   | `/api/auth/login`                | Authenticate user        |
-| GET    | `/api/auth/user-info`            | Get current user profile |
-| POST   | `/api/auth/update-profile`       | Update user profile      |
-| POST   | `/api/auth/add-profile-image`    | Upload profile image     |
-| DELETE | `/api/auth/remove-profile-image` | Remove profile image     |
-| POST   | `/api/auth/logout`               | End user session         |
+| Method | Endpoint                         | Description               |
+| ------ | -------------------------------- | ------------------------- |
+| POST   | `/api/auth/signup`               | Register new user         |
+| POST   | `/api/auth/login`                | User login                |
+| GET    | `/api/auth/user-info`            | Get current user (cached) |
+| POST   | `/api/auth/update-profile`       | Update user profile       |
+| POST   | `/api/auth/add-profile-image`    | Upload profile image      |
+| DELETE | `/api/auth/remove-profile-image` | Remove profile image      |
+| POST   | `/api/auth/logout`               | User logout               |
 
-### Contacts Endpoints
-
-| Method | Endpoint                            | Description         |
-| ------ | ----------------------------------- | ------------------- |
-| POST   | `/api/contacts/search`              | Search for contacts |
-| GET    | `/api/contacts/get-contacts-for-dm` | Get DM contact list |
-| GET    | `/api/contacts/get-all-contacts`    | Get all contacts    |
-
-### Messages Endpoints
+### Messages
 
 | Method | Endpoint                     | Description            |
 | ------ | ---------------------------- | ---------------------- |
-| POST   | `/api/messages/get-messages` | Retrieve conversation  |
+| POST   | `/api/messages/get-messages` | Get DM history         |
 | POST   | `/api/messages/upload-file`  | Upload file attachment |
 
-### Channel Endpoints
+### Channels
 
 | Method | Endpoint                                       | Description          |
 | ------ | ---------------------------------------------- | -------------------- |
@@ -414,62 +309,54 @@ docker-compose up -d
 | GET    | `/api/channel/get-user-channels`               | Get user's channels  |
 | GET    | `/api/channel/get-channel-messages/:channelId` | Get channel messages |
 
-### WebSocket Events
+### Contacts
 
-| Event                     | Direction       | Description             |
-| ------------------------- | --------------- | ----------------------- |
-| `sendMessage`             | Client → Server | Send direct message     |
-| `recieveMessage`          | Server → Client | Receive direct message  |
-| `send-channel-message`    | Client → Server | Send channel message    |
-| `recieve-channel-message` | Server → Client | Receive channel message |
+| Method | Endpoint                            | Description      |
+| ------ | ----------------------------------- | ---------------- |
+| POST   | `/api/contacts/search`              | Search users     |
+| GET    | `/api/contacts/get-contacts-for-dm` | Get DM contacts  |
+| GET    | `/api/contacts/get-all-contacts`    | Get all contacts |
 
 ---
 
 ## Deployment
 
-### Vercel (Frontend)
+### Frontend (Vercel)
 
-1. Connect your GitHub repository to Vercel
-2. Set the root directory to `client`
-3. Configure environment variables
+1. Connect GitHub repository to Vercel
+2. Set root directory to `client`
+3. Add environment variables
 4. Deploy
 
-### Docker (Backend)
+### Backend (Render/Railway)
 
-The server includes Docker configuration for containerized deployment:
-
-```bash
-cd server
-docker-compose up -d --build
-```
-
-### SSL/TLS Configuration
-
-NGINX configuration is provided in `server/nginx/` for SSL termination and reverse proxy setup.
+1. Connect GitHub repository
+2. Set root directory to `server`
+3. Add environment variables
+4. Set start command: `npm start`
+5. Deploy
 
 ---
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin feature/your-feature-name`
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-### Code Standards
-
-- Follow ESLint configuration for code style
-- Write descriptive commit messages
-- Include tests for new features
-- Update documentation as needed
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-**ComuniQ** - Real-Time Communication, Reimagined
+## Acknowledgments
+
+- [Socket.IO](https://socket.io/) for real-time communication
+- [Upstash](https://upstash.com/) for serverless Redis
+- [Cloudinary](https://cloudinary.com/) for media management
+- [MongoDB Atlas](https://www.mongodb.com/atlas) for database hosting
