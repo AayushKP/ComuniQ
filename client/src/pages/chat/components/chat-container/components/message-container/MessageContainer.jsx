@@ -49,12 +49,12 @@ function MessageContainer() {
         response = await apiClient.post(
           GET_ALL_MESSAGES_ROUTE,
           { id: selectedChatData._id },
-          { withCredentials: true }
+          { withCredentials: true },
         );
       } else if (selectedChatType === "channel") {
         response = await apiClient.get(
           `${GET_CHANNEL_MESSAGES}/${selectedChatData._id}`,
-          { withCredentials: true }
+          { withCredentials: true },
         );
       }
       if (response.data?.messages) {
@@ -132,7 +132,7 @@ function MessageContainer() {
         setFileDownloadProgress(0);
       }
     },
-    [setFileDownloadProgress, setIsDownloading]
+    [setFileDownloadProgress, setIsDownloading],
   );
 
   // Render direct messages.
@@ -195,7 +195,7 @@ function MessageContainer() {
         </div>
       </div>
     ),
-    [selectedChatData, checkImage, downloadFile]
+    [selectedChatData, checkImage, downloadFile],
   );
 
   // Render channel messages.
@@ -220,7 +220,7 @@ function MessageContainer() {
         {message.messageType === "file" && (
           <div
             className={`border inline-block p-4 rounded-2xl my-1 max-w-[50%] break-words ${
-              message.sender._id === userInfo._id
+              message.sender._id === userInfo.id
                 ? "bg-[#328aa9]/5 text-[#c6c451]/90 border-[#bdcd46]/50"
                 : "bg-[#2a2b33]/5 text-[white]/90 border-[#ffffff]/20"
             }`}
@@ -265,7 +265,7 @@ function MessageContainer() {
               )}
               <AvatarFallback
                 className={`uppercase h-8 w-8 text-lg flex items-center justify-center rounded-full ${getColor(
-                  message.sender.color
+                  message.sender.color,
                 )}`}
               >
                 {message.sender.firstName
@@ -287,7 +287,7 @@ function MessageContainer() {
         )}
       </div>
     ),
-    [userInfo, checkImage, downloadFile]
+    [userInfo, checkImage, downloadFile],
   );
 
   // Memoize messages for performance and add date separators.
