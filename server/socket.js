@@ -26,7 +26,7 @@ const setupSocket = (server) => {
     }
 
     socket.on("sendMessage", (message) => {
-      sendMessage(message);
+      sendMessage(socket, message);
     });
 
     socket.on("disconnect", async () => {
@@ -43,25 +43,30 @@ const setupSocket = (server) => {
     await setUserOffline(socket.id);
   };
 
-  const sendMessage = async (message) => {
-    const senderSocketId = await getUserSocketId(message.sender);
-    const recipientSocketId = await getUserSocketId(message.recipient);
-
-    const createdMessage = await Message.create(message);
+  const sendMessage = async (senderSocket, message) => {
+    // We already have the sender's socket ID, no need to query cache!
+    const senderSocketId = senderSocket.id;
+    
+    // Run DB creation and Recipient Socket lookup in parallel
+    const [recipientSocketId, createdMessage] = await Promise.all([
+      getUserSocketId(message.recipient),
+      Message.create(message)
+    ]);
     console.log("Message created:", createdMessage);
 
-    const messageData = await Message.findById(createdMessage._id)
-      .populate("sender", "id email firstName lastName image color")
-      .populate("recipient", "id email firstName lastName image color");
-
+    // Populate directly on the created document (skips the findById query)
+    const messageData = await createdMessage.populate([
+      { path: "sender", select: "id email firstName lastName image color" },
+      { path: "recipient", select: "id email firstName lastName image color" }
+    ]);
     console.log("Message data:", messageData);
 
     if (recipientSocketId) {
       io.to(recipientSocketId).emit("receiveMessage", messageData);
     }
-    if (senderSocketId) {
-      io.to(senderSocketId).emit("receiveMessage", messageData);
-    }
+    
+    // Always emit back to the sender instantly
+    io.to(senderSocketId).emit("receiveMessage", messageData);
   };
 
   const sendChannelMessage = async (message) => {
