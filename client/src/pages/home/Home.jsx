@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import CommunicationSvg from "@/assets/communication.svg";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -45,9 +46,9 @@ export default function Home() {
           className=" md:mt-0 order-1 md:order-2"
         >
           <img
-            src="https://illustrations.popsy.co/amber/communication.svg"
+            src={CommunicationSvg}
             alt="Communication Illustration"
-            className="w-96 h-96 object-contain"
+            className="w-96 h-96 md:w-[480px] md:h-[480px] object-contain drop-shadow-2xl"
           />
         </motion.div>
       </div>
